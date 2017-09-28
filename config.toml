@@ -13,10 +13,10 @@ disableKinds = ["taxonomy", "taxonomyTerm"] # This theme does not currently use 
     tagline = "Pantaloche blog"
     author = "Inasio"
     description = "Random ramblings and stuff"
-    logoBig = "/images/osprey-logo.png"
-    logoSmall = "/images/osprey-logo.png"
+    logoBig = "/images/cat1.png"
+    logoSmall = "/images/eyes_cat.png"
     favicon = "favicon.ico"
-    opengraphImage = "/images/osprey.png"
+    opengraphImage = "/images/halcon1.png"
     twitter = ""
     linkedin = ""
     github = "inasio"
@@ -31,12 +31,18 @@ disableKinds = ["taxonomy", "taxonomyTerm"] # This theme does not currently use 
     ajaxFormspree = true
 
 [[menu.main]]
-  name = "Home"
-  weight = 1
-  identifier = "home"
-  url = "/"
+    name = "About"
+    url  = "/#about"
+    weight = 1
 [[menu.main]]
-  name = "Posts"
-  weight = 2
-  identifier = "post"
-  url = "/post/"
+    name = "Work"
+    url  = "/#work"
+    weight = 2
+[[menu.main]]
+    name = "Blog"
+    url  = "/#blog"
+    weight = 3
+[[menu.main]]
+    name = "Contact"
+    url  = "/#contact"
+    weight = 4
