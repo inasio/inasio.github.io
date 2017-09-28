@@ -1,3 +1,42 @@
-baseURL = "http://example.org/"
-languageCode = "en-us"
-title = "My New Hugo Site"
+title = "Pantaloche"
+baseURL = "https://insasio.github.io"
+tags = ["portfolio", "code", "blog"]
+languageCode = "en-US"
+config = "config.toml"
+theme = "osprey"
+canonifyURLS = true
+googleAnalytics = ""
+disqusShortname = ""
+disableKinds = ["taxonomy", "taxonomyTerm"] # This theme does not currently use "tag" and "category" taxonomies
+
+[Params]
+    tagline = "Pantaloche blog"
+    author = "Inasio"
+    description = "Random ramblings and stuff"
+    logoBig = "/images/osprey-logo.png"
+    logoSmall = "/images/osprey-logo.png"
+    favicon = "favicon.ico"
+    opengraphImage = "/images/osprey.png"
+    twitter = ""
+    linkedin = ""
+    github = "inasio"
+    email = ""
+    googleTagManger = ""
+    highlightJS = true
+    copyright = true
+    credit = true
+    customCSS = false
+    cacheBustCSS = false
+    cacheBustJS = false
+    ajaxFormspree = true
+
+[[menu.main]]
+  name = "Home"
+  weight = 1
+  identifier = "home"
+  url = "/"
+[[menu.main]]
+  name = "Posts"
+  weight = 2
+  identifier = "post"
+  url = "/post/"
