@@ -1,48 +1,66 @@
+baseURL = "https://inasio.github.io"
 title = "Pantaloche"
-baseURL = "https://insasio.github.io"
-tags = ["portfolio", "code", "blog"]
-languageCode = "en-US"
-config = "config.toml"
-theme = "osprey"
-canonifyURLS = true
-googleAnalytics = ""
+copyright = ""
+
+theme = "minimo"
+
 disqusShortname = ""
-disableKinds = ["taxonomy", "taxonomyTerm"] # This theme does not currently use "tag" and "category" taxonomies
+googleAnalytics = ""
+Paginate = 5
 
-[Params]
-    tagline = "Pantaloche blog"
-    author = "Inasio"
-    description = "Random ramblings and stuff"
-    logoBig = "/images/cat1.png"
-    logoSmall = "/images/eyes_cat.png"
-    favicon = "favicon.ico"
-    opengraphImage = "/images/halcon1.png"
-    twitter = ""
-    linkedin = ""
-    github = "inasio"
-    email = ""
-    googleTagManger = ""
-    highlightJS = true
-    copyright = true
-    credit = true
-    customCSS = false
-    cacheBustCSS = false
-    cacheBustJS = false
-    ajaxFormspree = true
+preserveTaxonomyNames = true
+
+[params]
+  description = "Pantaloche static site"
+  dateFormat = "Jan 2, 2006"
+  copyrightOwner = "inasio"
+  copyrightStartYear = "2017"
+  favicon = "favicon.ico"
+  hideEntryNavigation = false
+  customCSS = ["css/custom.css"]
+  customJS = ["js/custom.js"]
+  hideSocialMenu = false
+  showReadTime = true
+
+[params.seo]
+  # Title Separator: - – — · • * ⋆ | ~ « » < >
+  titleSeparator = "•"
+
+[params.opengraph]
+  [params.opengraph.facebook]
+    admins = ""
+    appid = ""
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+[author]
+  name = "Minimo"
+
+[author.social]
+  codepen = ""
+  email = ""
+  github = "inasio"
+  instagram = ""
+  twitter = ""
+  linkedin = ""
+
+[permalinks]
+  page = "/:slug/"
 
 [[menu.main]]
-    name = "About"
-    url  = "/#about"
+  name = "Blog"
+  weight = -70
+  identifier = "inasio"
+  url = "https://inasio.github.io"
+
+# Language Configuration
+defaultContentLanguage = "en"
+
+[languages]
+  # edit this block for your own language
+  [languages.en]
+    lang = "en"
+    languageName = "English"
     weight = 1
-[[menu.main]]
-    name = "Work"
-    url  = "/#work"
-    weight = 2
-[[menu.main]]
-    name = "Blog"
-    url  = "/#blog"
-    weight = 3
-[[menu.main]]
-    name = "Contact"
-    url  = "/#contact"
-    weight = 4
