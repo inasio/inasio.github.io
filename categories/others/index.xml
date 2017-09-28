@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Others on Pantaloche</title>
+    <link>https://inasio.github.io/categories/others/</link>
+    <description>Recent content in Others on Pantaloche</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Thu, 28 Sep 2017 15:35:54 -0700</lastBuildDate>
+    
+	<atom:link href="https://inasio.github.io/categories/others/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Welcome to my new website</title>
+      <link>https://inasio.github.io/post/welcome-message/</link>
+      <pubDate>Thu, 28 Sep 2017 15:35:54 -0700</pubDate>
+      
+      <guid>https://inasio.github.io/post/welcome-message/</guid>
+      <description>Meta post I&amp;rsquo;m very happy to introduce my new website! The plan is to get back into writing, I&amp;rsquo;m not really sure what shape or form it will take. I remember as a kid the day that the coin dropped in my head on how writing represented spoken language, and specifically I remember that the first work I wrote (and proudly showed my mom) was meta. It&amp;rsquo;s in that sense that this is the Meta post.</description>
+    </item>
+    
+  </channel>
+</rss>
