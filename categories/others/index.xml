@@ -5,18 +5,27 @@
     <link>https://inasio.github.io/categories/others/</link>
     <description>Recent content in Others on Pantaloche</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 28 Sep 2017 15:35:54 -0700</lastBuildDate>
+    <lastBuildDate>Thu, 05 Oct 2017 15:51:44 -0700</lastBuildDate>
     
 	<atom:link href="https://inasio.github.io/categories/others/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Welcome to my new website</title>
-      <link>https://inasio.github.io/post/welcome-message/</link>
+      <title>Read All the Books</title>
+      <link>https://inasio.github.io/post/read-all-the-books/</link>
+      <pubDate>Thu, 05 Oct 2017 15:51:44 -0700</pubDate>
+      
+      <guid>https://inasio.github.io/post/read-all-the-books/</guid>
+      <description>I like to read books. The first real books that I ever read, just lines of words in each page, were the Sandokan books by Emilio Salgari (Salgari is probably worth writing a post or two, at the very least). I read that I could find, then read them again, and then I read them again. I remember being frustrated that by chance I had managed to luck out and start reading with world&amp;rsquo;s very best most excellent books, the frustration being that it was all going to be downhill from here.</description>
+    </item>
+    
+    <item>
+      <title>Meta post</title>
+      <link>https://inasio.github.io/post/welcome/</link>
       <pubDate>Thu, 28 Sep 2017 15:35:54 -0700</pubDate>
       
-      <guid>https://inasio.github.io/post/welcome-message/</guid>
-      <description>Meta post I&amp;rsquo;m very happy to introduce my new website! The plan is to get back into writing, I&amp;rsquo;m not really sure what shape or form it will take. I remember as a kid the day that the coin dropped in my head on how writing represented spoken language, and specifically I remember that the first work I wrote (and proudly showed my mom) was meta. It&amp;rsquo;s in that sense that this is the Meta post.</description>
+      <guid>https://inasio.github.io/post/welcome/</guid>
+      <description>Welcome to my new website I&amp;rsquo;m very happy to introduce my new website! The plan is to get back into writing, I&amp;rsquo;m not really sure what shape or form it will take. I remember as a kid the day that the coin dropped in my head on how writing represented spoken language, and specifically I remember that the first work I wrote (and proudly showed my mom) was meta. It&amp;rsquo;s in that sense that this is the Meta post.</description>
     </item>
     
   </channel>
