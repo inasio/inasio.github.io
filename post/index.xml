@@ -7,10 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Powered by [Hugo](http://gohugo.io).</copyright>
-    <lastBuildDate>Thu, 05 Oct 2017 15:51:44 -0700</lastBuildDate>
+    <lastBuildDate>Thu, 08 Feb 2018 15:51:44 -0700</lastBuildDate>
     
 	<atom:link href="https://inasio.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Solving a multi-knapsack problem iteratively</title>
+      <link>https://inasio.github.io/post/iterative-multi-knapsack-optimization/</link>
+      <pubDate>Thu, 08 Feb 2018 15:51:44 -0700</pubDate>
+      
+      <guid>https://inasio.github.io/post/iterative-multi-knapsack-optimization/</guid>
+      <description>Goal
+Distribute the given boxes into a hundred trucks so that the lightest and heaviest have the smallest possible weight difference.
+Background
+You are a great tycoon who needs to move materials, equipment and gold from Chicago to New York to build your next sky scraper. You have a convoy of 100 trucks and a variable amount of boxes to move. Unfortunately there are unscrupulous villains who would like to steal the gold from one of your shipments.</description>
+    </item>
     
     <item>
       <title>Read All the Books</title>
@@ -19,18 +31,6 @@
       
       <guid>https://inasio.github.io/post/read-all-the-books/</guid>
       <description>I like to read books. The first real books that I ever read, just lines of words in each page, were the Sandokan books by Emilio Salgari (Salgari is probably worth writing a post or two, at the very least). I read that I could find, then read them again, and then I read them again. I remember being frustrated that by chance I had managed to luck out and start reading with world&amp;rsquo;s very best most excellent books, the frustration being that it was all going to be downhill from here.</description>
-    </item>
-    
-    <item>
-      <title>Read All the Books 2</title>
-      <link>https://inasio.github.io/post/read-all-the-books-2/</link>
-      <pubDate>Thu, 05 Oct 2017 15:51:44 -0700</pubDate>
-      
-      <guid>https://inasio.github.io/post/read-all-the-books-2/</guid>
-      <description>Goal
-Distribute the given boxes into a hundred trucks so that the lightest and heaviest have the smallest possible weight difference.
-Background
-You are a great tycoon who needs to move materials, equipment and gold from Chicago to New York to build your next sky scraper. You have a convoy of 100 trucks and a variable amount of boxes to move. Unfortunately there are unscrupulous villains who would like to steal the gold from one of your shipments.</description>
     </item>
     
     <item>
