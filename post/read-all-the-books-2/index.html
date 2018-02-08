@@ -1,0 +1,689 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Pantaloche</title>
+        <meta name="author">
+        <meta name="description" content="Pantaloche static site">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="Hugo 0.29" />
+        <link href="https://inasio.github.io/post/index.xml" rel="alternate" type="application/rss+xml" title="Pantaloche" />
+        <link href="https://inasio.github.io/post/index.xml" rel="feed" type="application/rss+xml" title="Pantaloche" />
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://inasio.github.io/css/styles.css">
+        <link rel="icon" href="https://inasio.github.io/favicon.ico">
+        <link rel="apple-touch-icon" href="https://inasio.github.io/apple-touch-icon.png" />
+        <link rel="stylesheet" href="https://inasio.github.io/css/highlightjs/monokai.css">
+        <script src="https://inasio.github.io/js/vendor/modernizr-2.8.0.min.js"></script>
+        
+        <style>
+        .site-header h2 .logo {
+        background: url(https://inasio.github.io/img/desk.jpg) no-repeat 0 0;
+        }
+        @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+          .site-header h2 .logo {
+            background-image: url(https://inasio.github.io/img/desk.jpg);
+        }}
+       .site-header {
+         background: #2a373d url(https://inasio.github.io/img/desk.jpg) no-repeat center center;
+         z-index: -1;
+        }
+        </style>
+    </head>
+    <body>
+        
+        <header class="site-header">
+          <div class="transparent-layer">
+              <h2>Pantaloche</h2>
+          </div>
+        </header>
+
+
+<div class="container clearfix">
+    <main role="main" class="content">
+        <article class="post">
+            <a class="btn home" href="https://inasio.github.io/" title="Back to home">&laquo; Back to home</a>
+            
+<h1><a href="https://inasio.github.io/post/read-all-the-books-2/" title="Read All the Books 2">Read All the Books 2</a></h1>
+
+<footer class="post-info">Posted on <span class="post-meta"><time datetime="2017.10.05">2017.10.05</time>
+
+    &middot; Tagged in
+        
+        <a href="https://inasio.github.io/tags/books">books</a>
+        
+    
+
+</span>
+</footer>
+
+            <p><strong>Goal</strong></p>
+
+<p>Distribute the given boxes into a hundred trucks so that the lightest and heaviest have the smallest possible weight difference.</p>
+
+<p><strong>Background</strong></p>
+
+<p>You are a great tycoon who needs to move materials, equipment and gold from Chicago to New York to build your next sky scraper. You have a convoy of 100 trucks and a variable amount of boxes to move. Unfortunately there are unscrupulous villains who would like to steal the gold from one of your shipments. They work at the highway weigh station and plan to pillage a truck that holds gold. They think the trucks with gold will be much heavier than the trucks without.</p>
+
+<p>Your mission is to sneak the gold passed by distributing the boxes across the trucks in a way that the lightest truck and the heaviest truck weigh almost the same amount.</p>
+
+<p>The villains have a sophisticated contraption that will tell them the largest weight difference of a convoy, the higher the difference, the more likely the heaviest trucks contain gold. In order to minimize the chances of an attack on one of your trucks, can you outsmart them with a strong algorithm to allocate the boxes?</p>
+
+<p>You are given a list of boxes, each with a weight and a volume. Your code must output for each box, in the same order as they were given, in which of the 100 trucks labelled 0 to 99 you decide to place that box.</p>
+
+<p>Each truck can carry a maximum volume of boxes of 100. You should assume the box volumes simply add together on a given truck. There is no limit on the weight of the boxes.</p>
+
+<p>If you successfully place each box in the trucks, you will be awarded a delta score corresponding to the weight difference of your heaviest and lightest trucks. You will be ranked according to the sum of this value for every validation test case, the lower the better.</p>
+
+<p><strong>Input</strong></p>
+
+<ul>
+<li>First line: one integer boxCount for the total number of boxes to distribute.</li>
+<li>Next boxCount lines: two floating point values over at most 18 characters weight and volume, the stats of each box.</li>
+</ul>
+
+<p><strong>Output</strong></p>
+
+<ul>
+<li>One line: boxCount space-separated integers for the indices of the trucks in which to place each box, in the same order as they were given.</li>
+</ul>
+
+<p><strong>Constraints</strong></p>
+
+<ul>
+<li>100 ≤ boxCount ≤ 3300</li>
+<li>0 &lt; weight &lt; 100</li>
+<li>0 &lt; volume ≤ 26</li>
+</ul>
+
+<p><strong>Inspired from:</strong> <a href="https://www.codingame.com/ide/9935189fb937700359e1d1e6bf52b01c5579ffc">https://www.codingame.com/ide/9935189fb937700359e1d1e6bf52b01c5579ffc</a></p>
+
+<pre><code class="language-python">import numpy as np
+import sys
+import math
+import matplotlib.pyplot as plt
+from itertools import combinations
+from copy import deepcopy
+
+box_count = 650
+truck_count = 100
+vol_lim = 100
+np.random.seed(2)
+box_list = [(x, 1+np.random.random()*99, 1+np.random.random()*25) for x in range(box_count)]
+
+boxes = box_list
+avg_truck_weight = sum([x[1] for x in boxes])/truck_count
+avg_truck_vol = sum([x[2] for x in boxes])/vol_lim
+
+avg_box_weight = sum([x[1] for x in boxes])/box_count
+avg_box_vol = sum([x[2] for x in boxes])/box_count
+</code></pre>
+
+<pre><code class="language-python">print('target truck weight = ', avg_truck_weight)
+print('average truck volume = ', avg_truck_vol)
+</code></pre>
+
+<pre><code>target truck weight =  319.05163361496375
+average truck volume =  86.4666561731195
+</code></pre>
+
+<p><strong>Algorithm Idea</strong></p>
+
+<p>Obtain an initial distribution of boxes on all the 100 trucks that satisfies the volume contraints (vol &lt; 100), and improve from there. We&rsquo;ll sort the boxes from heavy to light (or try something more exotic), and then attempt to load them on the lightest truck. If at some point the lightest truck is full (remaining volume is smaller than smallest vol box), then we remove that box from the algorithm</p>
+
+<p>In principle, by adding boxes to the lightest truck, all trucks should more or less be similar in weight in the end. Also, we sort the boxes from heavy to light, but other heuristics might have better results</p>
+
+<pre><code class="language-python">def box_sorting(el):
+#     el[1] -&gt; sort by weight
+    return el[1]
+
+def initial_distribution(boxes):
+    trucks, destination = [], {}
+    boxes = sorted(boxes, key=lambda el:box_sorting(el), reverse=True)    # by weight largest to smallest here
+    for i in range(truck_count):
+        items = boxes.pop(0)
+        trucks.append([i, items[1], items[2]])
+        destination[items[0]] = i
+    weight_target = avg_truck_weight + 12
+    did_not_converge = 0
+    while boxes:
+        truck = min(trucks, key=lambda el:el[1])    # min weight
+        truck_ix, truck_weight, truck_volume = truck[:3]
+        if (truck_weight + min(boxes, key=lambda el:el[1])[1] &gt; weight_target) or (truck_volume + min(boxes, key=lambda el:el[2])[2] &gt; 100):
+            trucks.remove(truck)
+            continue
+        score = 1000
+        for box in boxes:   # find the box that minimizes the weight difference
+            test_truck = (truck_ix, truck_weight + box[1], truck_volume + box[2])
+            test_score = abs(test_truck[1] - avg_truck_weight)
+            if (test_score &lt; score) and (test_truck[2]&lt;=100):
+                score = test_score
+                best_box = box
+        box = best_box
+        boxes.remove(best_box)
+        list_ix = trucks.index(truck)
+        box_ix, box_weight, box_volume = box[:3]
+        trucks[list_ix][1] += box_weight
+        trucks[list_ix][2] += box_volume
+        destination[box_ix] = truck_ix
+    full_trucks = [[x,0,0] for x in range(100)]   # weights and volumes of each full truck
+    boxes_in_truck = {x:[] for x in range(100)}   # for each truck, the list of boxes that are assigned to it
+    for box in destination:
+        truck = destination[box]
+        box_weight, box_vol = box_list[box][1:]
+        boxes_in_truck[truck].append(box)
+        full_trucks[truck][1] += box_weight
+        full_trucks[truck][2] += box_vol
+    return destination, full_trucks, boxes_in_truck
+</code></pre>
+
+<pre><code class="language-python">def print_score(full_trucks):
+    print('max weight truck (index, weight, vol) =', max(full_trucks,  key=lambda el:el[1]))
+    print('min weight truck (index, weight, vol) =', min(full_trucks,  key=lambda el:el[1]))
+    print('score (max-min) =', max(full_trucks,  key=lambda el:el[1])[1] - min(full_trucks,  key=lambda el:el[1])[1])
+    assert(max(full_trucks,  key=lambda el:el[2])[2] &lt; 100)   # test that all trucks satisfy the volume threshold
+    
+destination, full_trucks_init, boxes_in_truck_init = initial_distribution(box_list)  # for each box, the number of the truck where it gets assigned
+print_score(full_trucks_init)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [46, 326.9525919494784, 92.22635811041214]
+min weight truck (index, weight, vol) = [65, 302.11430973326105, 99.39162223304308]
+score (max-min) = 24.83828221621735
+</code></pre>
+
+<p>We can improve the score a bit by changing the way in which we sort the boxes initially:</p>
+
+<pre><code class="language-python">def box_sorting(el):
+#     el[1]/el[2] -&gt; sort by the ratio weight/volume
+    return el[1]/el[2]
+destination, full_trucks_init, boxes_in_truck_init = initial_distribution(box_list)  # for each box, the number of the truck where it gets assigned
+print_score(full_trucks_init)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [64, 326.399659074032, 89.56135045151949]
+min weight truck (index, weight, vol) = [19, 312.6142179745514, 99.9222932996774]
+score (max-min) = 13.785441099480579
+</code></pre>
+
+<p>That seemed to improve things a fair bit, let&rsquo;s see if we can do better</p>
+
+<pre><code class="language-python">def box_sorting(el):
+    return (el[1])**5/el[2]
+destination, full_trucks_init, boxes_in_truck_init = initial_distribution(box_list)  # for each box, the truck where it gets assigned
+print_score(full_trucks_init)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [49, 327.0275509631317, 95.92933411132074]
+min weight truck (index, weight, vol) = [50, 315.55932484415774, 99.59444902893341]
+score (max-min) = 11.468226118973973
+</code></pre>
+
+<p>After trying a few different heuristics, this one seems to do a bit better, but still far from the threshold of 1. We&rsquo;ll try instead to balance the initial distribution by distributing boxes from the trucks that are at the edges (lightest and heaviest)</p>
+
+<pre><code class="language-python">def relaxation(full_trucks, combination_boxes):
+    '''one step of the relaxation routine: find the truck with the smallest weight (value)
+    and swap a box (say one of the smaller ones) with one from a truck that is on the other 
+    side of the threshold'''
+    # list of trucks that are above the weight goal, sorted from large to small
+    target_truck = max(full_trucks,  key=lambda el:abs(avg_truck_weight - el[1]))
+    if target_truck[1] &lt; avg_truck_weight:
+        min_truck = target_truck
+        above_thres_trucks = sorted([x for x in full_trucks if x[1] &gt; avg_truck_weight], key=lambda el:el[1]/el[2], reverse=True)    
+        weight_target = avg_truck_weight - min_truck[1]
+        min_boxes = sorted(combination_boxes[min_truck[0]],  key=lambda el:el[1]/el[2])
+        for min_box in min_boxes:
+            for max_truck in above_thres_trucks:
+                max_boxes = combination_boxes[max_truck[0]]
+                for max_box in max_boxes:
+                    diff_vol = max_box[2] - min_box[2]
+                    diff_wei = max_box[1] - min_box[1]
+                    if (0 &lt; diff_wei &lt; weight_target) and (min_truck[2] + diff_vol &lt; 100) and (max_truck[2] - diff_vol &lt; 100):
+                        return (min_box, max_box), (min_truck, max_truck)
+    else:
+        max_truck = target_truck
+        below_thres_trucks = sorted([x for x in full_trucks if x[1] &lt; avg_truck_weight], key=lambda el:el[1]/el[2], reverse=True)    
+        weight_target = max_truck[1] - avg_truck_weight
+        max_boxes = sorted(combination_boxes[max_truck[0]],  key=lambda el:el[1]/el[2])
+        for max_box in max_boxes:
+            for min_truck in below_thres_trucks:
+                min_boxes = combination_boxes[min_truck[0]]
+                for min_box in min_boxes:
+                    diff_vol = max_box[2] - min_box[2]
+                    diff_wei = max_box[1] - min_box[1]
+                    if (0 &lt; diff_wei &lt; weight_target) and (min_truck[2] + diff_vol &lt; 100) and (max_truck[2] - diff_vol &lt; 100):
+                        return (min_box, max_box), (min_truck, max_truck)
+    print('no match was found')
+    return 0
+</code></pre>
+
+<p>The idea with the relaxation step is to swap a box from the truck that is furthest from the weight target with another box from a different truck that is on the other side of the target. This has to be done carefully to satisfy the weight limit for each truck. Furthermore, to add more posibilities we will add also the posibility of swapping pairs of boxes (by using the combinations of 2 for each truck).</p>
+
+<pre><code class="language-python">def generate_combinations(boxes_in_truck, combination_boxes, truck_indices = range(100)):
+    for truck in boxes_in_truck:
+        for box in boxes_in_truck[truck]:
+            combination_boxes[truck] = [((box,), box_list[box][1],  box_list[box][2])]
+        combs = combinations(boxes_in_truck[truck], 2)
+        for (box0, box1) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1], box_list[box0][2] + box_list[box1][2]
+            combination_boxes[truck].append(((box0, box1), comb_weight, comb_vol))
+        combs = combinations(boxes_in_truck[truck], 3)
+    return combination_boxes
+</code></pre>
+
+<pre><code class="language-python">combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck_init, combination_boxes)
+output = relaxation(full_trucks_init, combination_boxes_init)
+</code></pre>
+
+<pre><code class="language-python">output    # boxes to be swapped, and trucks from which the boxes will be swapped
+</code></pre>
+
+<pre><code>((((520,), 10.190215910030682, 5.658688253409288),
+  ((19,), 17.067561251729074, 18.518808665178906)),
+ ([79, 318.85433371747, 63.346947915560506],
+  [49, 327.0275509631317, 95.92933411132074]))
+</code></pre>
+
+<p>We need to do the box swapping and compute the score, if things work well we would be able to iterate the relaxation process and continuously reduce the score. In this case it could also happen that no two boxes are found to improve our heuristic, at which point the code will stop.</p>
+
+<pre><code class="language-python">def swap_boxes(output, full_trucks, boxes_in_truck):
+    (min_box, max_box), (min_truck, max_truck) = output
+    for box in min_box[0]:
+        boxes_in_truck[max_truck[0]].append(box)
+        boxes_in_truck[min_truck[0]].remove(box)
+    for box in max_box[0]:
+        boxes_in_truck[min_truck[0]].append(box)
+        boxes_in_truck[max_truck[0]].remove(box)
+    for truck in boxes_in_truck:
+        full_trucks[truck] = [truck, sum(box_list[x][1] for x in boxes_in_truck[truck]), sum(box_list[x][2] for x in boxes_in_truck[truck])]
+    max_truck1 = full_trucks[max_truck[0]]
+    min_truck1 = full_trucks[min_truck[0]]
+    max_trucks, min_trucks = max(full_trucks, key=lambda el:el[1]), min(full_trucks, key=lambda el:el[1])
+    score = max_trucks[1] - min_trucks[1]
+    return score, full_trucks, boxes_in_truck
+</code></pre>
+
+<p>Let&rsquo;s try now 1000 iterations</p>
+
+<pre><code class="language-python">def iterative_relaxation(full_trucks_init, boxes_in_truck_init, combination_boxes_init, print_it = False):
+
+    full_trucks = deepcopy(full_trucks_init)
+    boxes_in_truck = deepcopy(boxes_in_truck_init)
+    combination_boxes = deepcopy(combination_boxes_init)
+    for i in range(1000):
+        output = relaxation(full_trucks, combination_boxes)
+        if output == 0:
+            break
+        score, full_trucks, boxes_in_truck = swap_boxes(output, full_trucks, boxes_in_truck)
+        if print_it:
+            print('iteration', i, 'new score', score)
+        (min_box, max_box), (min_truck, max_truck) = output
+        truck_indices = [min_truck[0], max_truck[0]]
+        combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, truck_indices)
+    return full_trucks, boxes_in_truck
+
+destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, range(100))
+full_trucks, boxes_in_truck = iterative_relaxation(full_trucks, boxes_in_truck, combination_boxes, print_it = True)
+assert(max(full_trucks,  key=lambda el:el[2])[2] &lt; 100)   # test that all trucks satisfy the volume threshold
+</code></pre>
+
+<pre><code>...
+...
+...
+iteration 368 new score 0.11296961372846681
+iteration 369 new score 0.11236455938484369
+iteration 370 new score 0.11180785745210642
+iteration 371 new score 0.11160922229163361
+iteration 372 new score 0.11066512034682319
+iteration 373 new score 0.1104826472771947
+iteration 374 new score 0.10959317642078759
+iteration 375 new score 0.1091951426657829
+iteration 376 new score 0.10831062137305025
+iteration 377 new score 0.10457692503962335
+iteration 378 new score 0.10435362028528061
+iteration 379 new score 0.10228065152625732
+iteration 380 new score 0.10195955442929971
+iteration 381 new score 0.09752800974501952
+no match was found
+</code></pre>
+
+<pre><code class="language-python">print_score(full_trucks)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [85, 319.10082259343966, 99.19257020620017]
+min weight truck (index, weight, vol) = [40, 319.00329458369464, 86.31432923355682]
+score (max-min) = 0.09752800974501952
+</code></pre>
+
+<p>The new score improved <strong>100+</strong> from the the initial distribution! Let&rsquo;s see if we can do better adding combinations of 3</p>
+
+<pre><code class="language-python">def generate_combinations(boxes_in_truck, combination_boxes, truck_indices = range(100)):
+    for truck in boxes_in_truck:
+        for box in boxes_in_truck[truck]:
+            combination_boxes[truck] = [((box,), box_list[box][1],  box_list[box][2])]
+        combs = combinations(boxes_in_truck[truck], 2)
+        for (box0, box1) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1], box_list[box0][2] + box_list[box1][2]
+            combination_boxes[truck].append(((box0, box1), comb_weight, comb_vol))
+        combs = combinations(boxes_in_truck[truck], 3)
+        for (box0, box1, box2) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1] + box_list[box2][1], box_list[box0][2] + box_list[box1][2] + box_list[box2][2]
+            combination_boxes[truck].append(((box0, box1, box2), comb_weight, comb_vol))
+    return combination_boxes
+
+destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, range(100))
+full_trucks, boxes_in_truck = iterative_relaxation(full_trucks, boxes_in_truck, combination_boxes, print_it = True)
+assert(max(full_trucks,  key=lambda el:el[2])[2] &lt; 100)   # test that all trucks satisfy the volume threshold
+</code></pre>
+
+<pre><code>...
+...
+...
+iteration 394 new score 0.04567782678219601
+iteration 395 new score 0.0449293045225545
+iteration 396 new score 0.04432584389002159
+iteration 397 new score 0.042970538569534256
+iteration 398 new score 0.04295012414985422
+iteration 399 new score 0.04072853118788089
+iteration 400 new score 0.04065279215762985
+iteration 401 new score 0.04055107489494958
+iteration 402 new score 0.04038110098991865
+iteration 403 new score 0.040334881765602404
+iteration 404 new score 0.0391683381209873
+iteration 405 new score 0.038926828876924446
+iteration 406 new score 0.0385894494357899
+iteration 407 new score 0.0376007779306633
+iteration 408 new score 0.03713111112614342
+no match was found
+</code></pre>
+
+<pre><code class="language-python">print_score(full_trucks)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [1, 319.0703558169532, 91.64541520557478]
+min weight truck (index, weight, vol) = [84, 319.0332247058271, 79.75220766741351]
+score (max-min) = 0.03713111112614342
+</code></pre>
+
+<p>The score decreased by more than half, which is pretty good, but not as dramatic as the first time we tried the relaxation algorithm. On top of that, the code is starting to run a bit slow. The algorithm with the 3-way combinations is starting to take a bit of time, around 4 seconds in my computer. It might be a good time to do some profiling to see if there&rsquo;s anything we can improve</p>
+
+<pre><code class="language-python">import cProfile
+
+destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes_init = generate_combinations(boxes_in_truck, combination_boxes, range(100))
+cProfile.run('iterative_relaxation(full_trucks, boxes_in_truck, combination_boxes)', sort='cumulative')
+
+</code></pre>
+
+<pre><code>no match was found
+         2666915 function calls (2625515 primitive calls) in 1.919 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    1.956    1.956 {built-in method builtins.exec}
+        1    0.000    0.000    1.956    1.956 &lt;string&gt;:1(&lt;module&gt;)
+        1    0.001    0.001    1.956    1.956 &lt;ipython-input-300-ca12649ae6a4&gt;:1(iterative_relaxation)
+      409    1.099    0.003    1.195    0.003 &lt;ipython-input-304-d1c4a30d32dc&gt;:1(generate_combinations)
+      410    0.463    0.001    0.499    0.001 &lt;ipython-input-252-89df8e1dc7d5&gt;:1(relaxation)
+      409    0.029    0.000    0.183    0.000 &lt;ipython-input-288-6ce0923584f0&gt;:1(swap_boxes)
+    81800    0.063    0.000    0.135    0.000 {built-in method builtins.sum}
+  1889663    0.098    0.000    0.098    0.000 {method 'append' of 'list' objects}
+  32003/3    0.032    0.000    0.077    0.026 copy.py:132(deepcopy)
+        2    0.000    0.000    0.076    0.038 copy.py:236(_deepcopy_dict)
+  301/201    0.003    0.000    0.076    0.000 copy.py:210(_deepcopy_list)
+9300/4650    0.017    0.000    0.063    0.000 copy.py:219(_deepcopy_tuple)
+9300/4650    0.009    0.000    0.055    0.000 copy.py:220(&lt;listcomp&gt;)
+   306750    0.034    0.000    0.034    0.000 &lt;ipython-input-288-6ce0923584f0&gt;:10(&lt;genexpr&gt;)
+      819    0.014    0.000    0.027    0.000 {built-in method builtins.max}
+      820    0.011    0.000    0.016    0.000 {built-in method builtins.sorted}
+    41000    0.008    0.000    0.010    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:6(&lt;lambda&gt;)
+    64006    0.009    0.000    0.009    0.000 {method 'get' of 'dict' objects}
+      409    0.006    0.000    0.009    0.000 {built-in method builtins.min}
+    81800    0.006    0.000    0.006    0.000 &lt;ipython-input-288-6ce0923584f0&gt;:13(&lt;lambda&gt;)
+    41912    0.004    0.000    0.004    0.000 {built-in method builtins.id}
+    22400    0.002    0.000    0.002    0.000 copy.py:190(_deepcopy_atomic)
+    41000    0.002    0.000    0.002    0.000 {built-in method builtins.abs}
+      222    0.002    0.000    0.002    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:22(&lt;listcomp&gt;)
+    11699    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:22(&lt;lambda&gt;)
+      188    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:9(&lt;listcomp&gt;)
+    10920    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:24(&lt;lambda&gt;)
+     9171    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:9(&lt;lambda&gt;)
+     8306    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:11(&lt;lambda&gt;)
+     1555    0.000    0.000    0.000    0.000 {method 'remove' of 'list' objects}
+      303    0.000    0.000    0.000    0.000 copy.py:252(_keep_alive)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.print}
+        2    0.000    0.000    0.000    0.000 iostream.py:342(write)
+        3    0.000    0.000    0.000    0.000 iostream.py:180(schedule)
+        3    0.000    0.000    0.000    0.000 threading.py:1104(is_alive)
+        2    0.000    0.000    0.000    0.000 iostream.py:297(_schedule_flush)
+        3    0.000    0.000    0.000    0.000 {built-in method posix.urandom}
+        3    0.000    0.000    0.000    0.000 threading.py:1062(_wait_for_tstate_lock)
+        2    0.000    0.000    0.000    0.000 iostream.py:284(_is_master_process)
+        3    0.000    0.000    0.000    0.000 iostream.py:87(_event_pipe)
+        3    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.lock' objects}
+        2    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+        2    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        3    0.000    0.000    0.000    0.000 threading.py:506(is_set)
+        2    0.000    0.000    0.000    0.000 {built-in method posix.getpid}
+</code></pre>
+
+<p>Over 75% of the time is spent on the generate_combinations algorithm, it might be worth it to try to improve it, an obvious way would be to just update the boxes that are swapped at each iteration rather than fully generating it at each step. The swap_boxes algorithm is also up there with around 10% usage, looking at the function it&rsquo;s easy to see that we are generating the whole full_trucks list when we could just update the two trucks that swap boxes.</p>
+
+<pre><code class="language-python">def generate_combinations(boxes_in_truck, combination_boxes, truck_indices = range(100)):
+    boxes_in_truck = {x:boxes_in_truck[x] for x in truck_indices}
+    for truck in boxes_in_truck:
+        for box in boxes_in_truck[truck]:
+            combination_boxes[truck] = [((box,), box_list[box][1],  box_list[box][2])]
+        combs = combinations(boxes_in_truck[truck], 2)
+        for (box0, box1) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1], box_list[box0][2] + box_list[box1][2]
+            combination_boxes[truck].append(((box0, box1), comb_weight, comb_vol))
+        combs = combinations(boxes_in_truck[truck], 3)
+        for (box0, box1, box2) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1] + box_list[box2][1], box_list[box0][2] + box_list[box1][2] + box_list[box2][2]
+            combination_boxes[truck].append(((box0, box1, box2), comb_weight, comb_vol))
+    return combination_boxes
+
+def iterative_relaxation(full_trucks_init, boxes_in_truck_init, combination_boxes, print_it = False):
+    full_trucks = deepcopy(full_trucks_init)
+    boxes_in_truck = deepcopy(boxes_in_truck_init)
+    for i in range(1000):
+        output = relaxation(full_trucks, combination_boxes)
+        if output == 0:
+            print('iterations = ', i)
+            break
+        score, full_trucks, boxes_in_truck = swap_boxes(output, full_trucks, boxes_in_truck)
+        if print_it:
+            print('iteration', i, 'score =', score)
+        (min_box, max_box), (min_truck, max_truck) = output
+        truck_indices = [min_truck[0], max_truck[0]]
+        combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, truck_indices)
+    return full_trucks, boxes_in_truck
+
+def swap_boxes(output, full_trucks, boxes_in_truck):
+    (min_box, max_box), (min_truck, max_truck) = output
+    for box in min_box[0]:
+        boxes_in_truck[max_truck[0]].append(box)
+        boxes_in_truck[min_truck[0]].remove(box)
+    for box in max_box[0]:
+        boxes_in_truck[min_truck[0]].append(box)
+        boxes_in_truck[max_truck[0]].remove(box)
+    truck_indices = [min_truck[0], max_truck[0]]
+    for truck in truck_indices:
+        full_trucks[truck] = [truck, sum(box_list[x][1] for x in boxes_in_truck[truck]), sum(box_list[x][2] for x in boxes_in_truck[truck])]
+    max_truck1 = full_trucks[max_truck[0]]
+    min_truck1 = full_trucks[min_truck[0]]
+    max_trucks, min_trucks = max(full_trucks, key=lambda el:el[1]), min(full_trucks, key=lambda el:el[1])
+    score = max_trucks[1] - min_trucks[1]
+    return score, full_trucks, boxes_in_truck
+
+destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck, combination_boxes)
+full_trucks, boxes_in_truck = iterative_relaxation(full_trucks_init, boxes_in_truck_init, combination_boxes, True)
+assert(max(full_trucks,  key=lambda el:el[2])[2] &lt; 100)   # test that all trucks satisfy the volume threshold
+</code></pre>
+
+<pre><code>...
+...
+...
+iteration 395 score = 0.0449293045225545
+iteration 396 score = 0.04432584389002159
+iteration 397 score = 0.042970538569534256
+iteration 398 score = 0.04295012414985422
+iteration 399 score = 0.04072853118788089
+iteration 400 score = 0.04065279215762985
+iteration 401 score = 0.04055107489494958
+iteration 402 score = 0.04038110098991865
+iteration 403 score = 0.040334881765602404
+iteration 404 score = 0.0391683381209873
+iteration 405 score = 0.038926828876924446
+iteration 406 score = 0.0385894494357899
+iteration 407 score = 0.0376007779306633
+iteration 408 score = 0.03713111112614342
+no match was found
+iterations =  409
+</code></pre>
+
+<pre><code class="language-python">destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, range(100))
+cProfile.run('iterative_relaxation(full_trucks, boxes_in_truck, combination_boxes, print_it = False)', sort='cumulative')
+</code></pre>
+
+<pre><code>no match was found
+iterations =  409
+         266905 function calls (265555 primitive calls) in 0.585 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.586    0.586 {built-in method builtins.exec}
+        1    0.000    0.000    0.586    0.586 &lt;string&gt;:1(&lt;module&gt;)
+        1    0.001    0.001    0.586    0.586 &lt;ipython-input-318-a0938c73865b&gt;:16(iterative_relaxation)
+      410    0.492    0.001    0.528    0.001 &lt;ipython-input-252-89df8e1dc7d5&gt;:1(relaxation)
+      409    0.026    0.000    0.029    0.000 &lt;ipython-input-318-a0938c73865b&gt;:1(generate_combinations)
+      819    0.014    0.000    0.027    0.000 {built-in method builtins.max}
+      409    0.003    0.000    0.026    0.000 &lt;ipython-input-318-a0938c73865b&gt;:32(swap_boxes)
+      820    0.011    0.000    0.016    0.000 {built-in method builtins.sorted}
+    41000    0.008    0.000    0.010    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:6(&lt;lambda&gt;)
+      409    0.006    0.000    0.009    0.000 {built-in method builtins.min}
+    81800    0.006    0.000    0.006    0.000 &lt;ipython-input-318-a0938c73865b&gt;:45(&lt;lambda&gt;)
+     1636    0.002    0.000    0.004    0.000 {built-in method builtins.sum}
+    42549    0.003    0.000    0.003    0.000 {method 'append' of 'list' objects}
+   1252/2    0.001    0.000    0.002    0.001 copy.py:132(deepcopy)
+    41000    0.002    0.000    0.002    0.000 {built-in method builtins.abs}
+  201/101    0.000    0.000    0.002    0.000 copy.py:210(_deepcopy_list)
+      222    0.002    0.000    0.002    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:22(&lt;listcomp&gt;)
+    11699    0.002    0.000    0.002    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:22(&lt;lambda&gt;)
+        1    0.000    0.000    0.001    0.001 copy.py:236(_deepcopy_dict)
+      188    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:9(&lt;listcomp&gt;)
+    10920    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:24(&lt;lambda&gt;)
+     9171    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:9(&lt;lambda&gt;)
+     8306    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:11(&lt;lambda&gt;)
+     6220    0.001    0.000    0.001    0.000 &lt;ipython-input-318-a0938c73865b&gt;:42(&lt;genexpr&gt;)
+     1555    0.000    0.000    0.000    0.000 {method 'remove' of 'list' objects}
+     2504    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+      409    0.000    0.000    0.000    0.000 &lt;ipython-input-318-a0938c73865b&gt;:2(&lt;dictcomp&gt;)
+     1658    0.000    0.000    0.000    0.000 {built-in method builtins.id}
+        2    0.000    0.000    0.000    0.000 {built-in method builtins.print}
+      202    0.000    0.000    0.000    0.000 copy.py:252(_keep_alive)
+        6    0.000    0.000    0.000    0.000 iostream.py:342(write)
+        7    0.000    0.000    0.000    0.000 iostream.py:180(schedule)
+     1050    0.000    0.000    0.000    0.000 copy.py:190(_deepcopy_atomic)
+        7    0.000    0.000    0.000    0.000 {built-in method posix.urandom}
+        7    0.000    0.000    0.000    0.000 threading.py:1104(is_alive)
+        6    0.000    0.000    0.000    0.000 iostream.py:297(_schedule_flush)
+        7    0.000    0.000    0.000    0.000 threading.py:1062(_wait_for_tstate_lock)
+        6    0.000    0.000    0.000    0.000 iostream.py:284(_is_master_process)
+        7    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.lock' objects}
+        7    0.000    0.000    0.000    0.000 iostream.py:87(_event_pipe)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        7    0.000    0.000    0.000    0.000 threading.py:506(is_set)
+        6    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+        6    0.000    0.000    0.000    0.000 {built-in method posix.getpid}
+        1    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+</code></pre>
+
+<p>This looks much better, the generate_combinations function now only amounts to 5% of the total time, and the proportion of time swapping boxes decreased by half. As a result the total run time decreased by three quarters.</p>
+
+            <ul class="share-buttons">
+    <li>Share this article:</li>
+    <li>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2finasio.github.io%2fpost%2fread-all-the-books-2%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title="Share on Facebook"></a>
+    </li>
+    <li>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Read%20All%20the%20Books%202&amp;url=https%3a%2f%2finasio.github.io%2fpost%2fread-all-the-books-2%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title="Tweet this article"></a>
+    </li>
+    <li>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2finasio.github.io%2fpost%2fread-all-the-books-2%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title="Share on Google&#43;"></a>
+    </li>
+    <li>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2finasio.github.io%2fpost%2fread-all-the-books-2%2f&title=Read%20All%20the%20Books%202" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title="Share on Linkedin"></a>
+    </li>
+</ul>
+
+        </article>
+        
+    </main>
+    <aside class="author">
+  <img class="profile-image" src="https://inasio.github.io/img/profile-image2.jpg" alt="inasio" />
+  <p class="name">by 
+  <strong>inasio</strong></p>
+  <p class="address">Earth</p>
+  <p class="link"></p>
+  <ul class="social">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a href="//github.com/inasio" class="icon-github" target="_blank" title="Github"></a></li>
+
+
+
+
+<li><a href="https://inasio.github.io/post/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+
+  </ul>
+  <br><br>
+</aside>
+
+</div>
+
+<footer class="main-footer">
+  <div class="container clearfix">
+        <a class="icon-rss" href="https://inasio.github.io/post/index.xml" title="RSS"></a>
+        <p>&copy; 2018 &middot; Powered by <a href="http://gohugo.io">Hugo</a>.</p>
+  </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>window.jQuery || document.write('<script src="https:\/\/inasio.github.io\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="https://inasio.github.io/js/plugins.js"></script>
+
+
+
+
+</body>
+</html>
+
