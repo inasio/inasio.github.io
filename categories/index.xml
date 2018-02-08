@@ -5,18 +5,11 @@
     <link>https://inasio.github.io/categories/</link>
     <description>Recent content in Categories on Pantaloche</description>
     <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Powered by [Hugo](http://gohugo.io).</copyright>
     
 	<atom:link href="https://inasio.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Others</title>
-      <link>https://inasio.github.io/categories/others/</link>
-      <pubDate>Thu, 05 Oct 2017 15:51:44 -0700</pubDate>
-      
-      <guid>https://inasio.github.io/categories/others/</guid>
-      <description></description>
-    </item>
     
   </channel>
 </rss>

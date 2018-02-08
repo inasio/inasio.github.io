@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Pantaloche</title>
-    <link>https://inasio.github.io/post/</link>
-    <description>Recent content in Posts on Pantaloche</description>
+    <title>Hugo on Pantaloche</title>
+    <link>https://inasio.github.io/tags/hugo/</link>
+    <description>Recent content in Hugo on Pantaloche</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Powered by [Hugo](http://gohugo.io).</copyright>
     <lastBuildDate>Sat, 10 Oct 2015 13:07:31 +0200</lastBuildDate>
     
-	<atom:link href="https://inasio.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://inasio.github.io/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -24,18 +24,6 @@
 With Jekyll, something that looked like&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Go is for lovers</title>
-      <link>https://inasio.github.io/post/go-is-for-lovers/</link>
-      <pubDate>Thu, 17 Sep 2015 13:47:08 +0200</pubDate>
-      
-      <guid>https://inasio.github.io/post/go-is-for-lovers/</guid>
-      <description>Goal
-Distribute the given boxes into a hundred trucks so that the lightest and heaviest have the smallest possible weight difference.
-Background
-You are a great tycoon who needs to move materials, equipment and gold from Chicago to New York to build your next sky scraper. You have a convoy of 100 trucks and a variable amount of boxes to move. Unfortunately there are unscrupulous villains who would like to steal the gold from one of your shipments.</description>
     </item>
     
     <item>
@@ -54,16 +42,6 @@ appropriate version for your os and architecture.&lt;/p&gt;
 &lt;p&gt;More complete instructions are available at &lt;a href=&#34;https://inasio.github.io/overview/installing/&#34;&gt;installing hugo&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Creating a new theme</title>
-      <link>https://inasio.github.io/post/creating-a-new-theme/</link>
-      <pubDate>Wed, 24 Jun 2015 13:50:46 +0200</pubDate>
-      
-      <guid>https://inasio.github.io/post/creating-a-new-theme/</guid>
-      <description>Introduction This tutorial will show you how to create a simple theme in Hugo. I assume that you are familiar with HTML, the bash command line, and that you are comfortable using Markdown to format content. I&amp;rsquo;ll explain how Hugo uses templates and how you can organize your templates to create a theme. I won&amp;rsquo;t cover using CSS to style your theme.
-We&amp;rsquo;ll start with creating a new site with a very basic template.</description>
     </item>
     
   </channel>

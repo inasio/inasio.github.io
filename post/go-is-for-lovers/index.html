@@ -1,0 +1,1833 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Pantaloche</title>
+        <meta name="author">
+        <meta name="description" content="Pantaloche static site">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="Hugo 0.29" />
+        <link href="https://inasio.github.io/post/index.xml" rel="alternate" type="application/rss+xml" title="Pantaloche" />
+        <link href="https://inasio.github.io/post/index.xml" rel="feed" type="application/rss+xml" title="Pantaloche" />
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://inasio.github.io/css/styles.css">
+        <link rel="icon" href="https://inasio.github.io/favicon.ico">
+        <link rel="apple-touch-icon" href="https://inasio.github.io/apple-touch-icon.png" />
+        <link rel="stylesheet" href="https://inasio.github.io/css/highlightjs/monokai.css">
+        <script src="https://inasio.github.io/js/vendor/modernizr-2.8.0.min.js"></script>
+        
+        <style>
+        .site-header h2 .logo {
+        background: url(https://inasio.github.io/img/desk.jpg) no-repeat 0 0;
+        }
+        @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+          .site-header h2 .logo {
+            background-image: url(https://inasio.github.io/img/desk.jpg);
+        }}
+       .site-header {
+         background: #2a373d url(https://inasio.github.io/img/desk.jpg) no-repeat center center;
+         z-index: -1;
+        }
+        </style>
+    </head>
+    <body>
+        
+        <header class="site-header">
+          <div class="transparent-layer">
+              <h2>Pantaloche</h2>
+          </div>
+        </header>
+
+
+<div class="container clearfix">
+    <main role="main" class="content">
+        <article class="post">
+            <a class="btn home" href="https://inasio.github.io/" title="Back to home">&laquo; Back to home</a>
+            
+<h1><a href="https://inasio.github.io/post/go-is-for-lovers/" title="Go is for lovers">Go is for lovers</a></h1>
+
+<footer class="post-info">Posted on <span class="post-meta"><time datetime="2015.09.17">2015.09.17</time>
+
+    
+
+</span>
+</footer>
+
+            <p><strong>Goal</strong></p>
+
+<p>Distribute the given boxes into a hundred trucks so that the lightest and heaviest have the smallest possible weight difference.</p>
+
+<p><strong>Background</strong></p>
+
+<p>You are a great tycoon who needs to move materials, equipment and gold from Chicago to New York to build your next sky scraper. You have a convoy of 100 trucks and a variable amount of boxes to move. Unfortunately there are unscrupulous villains who would like to steal the gold from one of your shipments. They work at the highway weigh station and plan to pillage a truck that holds gold. They think the trucks with gold will be much heavier than the trucks without.</p>
+
+<p>Your mission is to sneak the gold passed by distributing the boxes across the trucks in a way that the lightest truck and the heaviest truck weigh almost the same amount.</p>
+
+<p>The villains have a sophisticated contraption that will tell them the largest weight difference of a convoy, the higher the difference, the more likely the heaviest trucks contain gold. In order to minimize the chances of an attack on one of your trucks, can you outsmart them with a strong algorithm to allocate the boxes?</p>
+
+<p>You are given a list of boxes, each with a weight and a volume. Your code must output for each box, in the same order as they were given, in which of the 100 trucks labelled 0 to 99 you decide to place that box.</p>
+
+<p>Each truck can carry a maximum volume of boxes of 100. You should assume the box volumes simply add together on a given truck. There is no limit on the weight of the boxes.</p>
+
+<p>If you successfully place each box in the trucks, you will be awarded a delta score corresponding to the weight difference of your heaviest and lightest trucks. You will be ranked according to the sum of this value for every validation test case, the lower the better.</p>
+
+<p><strong>Input</strong></p>
+
+<ul>
+<li>First line: one integer boxCount for the total number of boxes to distribute.</li>
+<li>Next boxCount lines: two floating point values over at most 18 characters weight and volume, the stats of each box.</li>
+</ul>
+
+<p><strong>Output</strong></p>
+
+<ul>
+<li>One line: boxCount space-separated integers for the indices of the trucks in which to place each box, in the same order as they were given.</li>
+</ul>
+
+<p><strong>Constraints</strong></p>
+
+<ul>
+<li>100 ≤ boxCount ≤ 3300</li>
+<li>0 &lt; weight &lt; 100</li>
+<li>0 &lt; volume ≤ 26</li>
+</ul>
+
+<p><strong>Inspired from:</strong> <a href="https://www.codingame.com/ide/9935189fb937700359e1d1e6bf52b01c5579ffc">https://www.codingame.com/ide/9935189fb937700359e1d1e6bf52b01c5579ffc</a></p>
+
+<pre><code class="language-python">import numpy as np
+import sys
+import math
+import matplotlib.pyplot as plt
+from itertools import combinations
+from copy import deepcopy
+
+box_count = 650
+truck_count = 100
+vol_lim = 100
+np.random.seed(2)
+box_list = [(x, 1+np.random.random()*99, 1+np.random.random()*25) for x in range(box_count)]
+
+boxes = box_list
+avg_truck_weight = sum([x[1] for x in boxes])/truck_count
+avg_truck_vol = sum([x[2] for x in boxes])/vol_lim
+
+avg_box_weight = sum([x[1] for x in boxes])/box_count
+avg_box_vol = sum([x[2] for x in boxes])/box_count
+</code></pre>
+
+<pre><code class="language-python">print('target truck weight = ', avg_truck_weight)
+print('average truck volume = ', avg_truck_vol)
+</code></pre>
+
+<pre><code>target truck weight =  319.05163361496375
+average truck volume =  86.4666561731195
+</code></pre>
+
+<p><strong>Algorithm Idea</strong></p>
+
+<p>Obtain an initial distribution of boxes on all the 100 trucks that satisfies the volume contraints (vol &lt; 100), and improve from there. We&rsquo;ll sort the boxes from heavy to light (or try something more exotic), and then attempt to load them on the lightest truck. If at some point the lightest truck is full (remaining volume is smaller than smallest vol box), then we remove that box from the algorithm</p>
+
+<p>In principle, by adding boxes to the lightest truck, all trucks should more or less be similar in weight in the end. Also, we sort the boxes from heavy to light, but other heuristics might have better results</p>
+
+<pre><code class="language-python">def box_sorting(el):
+#     el[1] -&gt; sort by weight
+    return el[1]
+
+def initial_distribution(boxes):
+    trucks, destination = [], {}
+    boxes = sorted(boxes, key=lambda el:box_sorting(el), reverse=True)    # by weight largest to smallest here
+    for i in range(truck_count):
+        items = boxes.pop(0)
+        trucks.append([i, items[1], items[2]])
+        destination[items[0]] = i
+    weight_target = avg_truck_weight + 12
+    did_not_converge = 0
+    while boxes:
+        truck = min(trucks, key=lambda el:el[1])    # min weight
+        truck_ix, truck_weight, truck_volume = truck[:3]
+        if (truck_weight + min(boxes, key=lambda el:el[1])[1] &gt; weight_target) or (truck_volume + min(boxes, key=lambda el:el[2])[2] &gt; 100):
+            trucks.remove(truck)
+            continue
+        score = 1000
+        for box in boxes:   # find the box that minimizes the weight difference
+            test_truck = (truck_ix, truck_weight + box[1], truck_volume + box[2])
+            test_score = abs(test_truck[1] - avg_truck_weight)
+            if (test_score &lt; score) and (test_truck[2]&lt;=100):
+                score = test_score
+                best_box = box
+        box = best_box
+        boxes.remove(best_box)
+        list_ix = trucks.index(truck)
+        box_ix, box_weight, box_volume = box[:3]
+        trucks[list_ix][1] += box_weight
+        trucks[list_ix][2] += box_volume
+        destination[box_ix] = truck_ix
+    full_trucks = [[x,0,0] for x in range(100)]   # weights and volumes of each full truck
+    boxes_in_truck = {x:[] for x in range(100)}   # for each truck, the list of boxes that are assigned to it
+    for box in destination:
+        truck = destination[box]
+        box_weight, box_vol = box_list[box][1:]
+        boxes_in_truck[truck].append(box)
+        full_trucks[truck][1] += box_weight
+        full_trucks[truck][2] += box_vol
+    return destination, full_trucks, boxes_in_truck
+</code></pre>
+
+<pre><code class="language-python">def print_score(full_trucks):
+    print('max weight truck (index, weight, vol) =', max(full_trucks,  key=lambda el:el[1]))
+    print('min weight truck (index, weight, vol) =', min(full_trucks,  key=lambda el:el[1]))
+    print('score (max-min) =', max(full_trucks,  key=lambda el:el[1])[1] - min(full_trucks,  key=lambda el:el[1])[1])
+    assert(max(full_trucks,  key=lambda el:el[2])[2] &lt; 100)   # test that all trucks satisfy the volume threshold
+    
+destination, full_trucks_init, boxes_in_truck_init = initial_distribution(box_list)  # for each box, the number of the truck where it gets assigned
+print_score(full_trucks_init)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [46, 326.9525919494784, 92.22635811041214]
+min weight truck (index, weight, vol) = [65, 302.11430973326105, 99.39162223304308]
+score (max-min) = 24.83828221621735
+</code></pre>
+
+<p>We can improve the score a bit by changing the way in which we sort the boxes initially:</p>
+
+<pre><code class="language-python">def box_sorting(el):
+#     el[1]/el[2] -&gt; sort by the ratio weight/volume
+    return el[1]/el[2]
+destination, full_trucks_init, boxes_in_truck_init = initial_distribution(box_list)  # for each box, the number of the truck where it gets assigned
+print_score(full_trucks_init)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [64, 326.399659074032, 89.56135045151949]
+min weight truck (index, weight, vol) = [19, 312.6142179745514, 99.9222932996774]
+score (max-min) = 13.785441099480579
+</code></pre>
+
+<p>That seemed to improve things a fair bit, let&rsquo;s see if we can do better</p>
+
+<pre><code class="language-python">def box_sorting(el):
+#     el[1]^5/el[2] -&gt; sort by the ratio weight/volume
+    return (el[1])**5/el[2]
+destination, full_trucks_init, boxes_in_truck_init = initial_distribution(box_list)  # for each box, the number of the truck where it gets assigned
+print_score(full_trucks_init)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [49, 327.0275509631317, 95.92933411132074]
+min weight truck (index, weight, vol) = [50, 315.55932484415774, 99.59444902893341]
+score (max-min) = 11.468226118973973
+</code></pre>
+
+<p>After trying a few different heuristics, this one seems to do a bit better, but still far from the threshold of 1. We&rsquo;ll try instead to balance the initial distribution by distributing boxes from the trucks that are at the edges (lightest and heaviest)</p>
+
+<pre><code class="language-python">def relaxation(full_trucks, combination_boxes):
+    '''one step of the relaxation routine: find the truck with the smallest weight (value)
+    and swap a box (say one of the smaller ones) with one from a truck that is on the other 
+    side of the threshold'''
+    # list of trucks that are above the weight goal, sorted from large to small
+    target_truck = max(full_trucks,  key=lambda el:abs(avg_truck_weight - el[1]))
+    if target_truck[1] &lt; avg_truck_weight:
+        min_truck = target_truck
+        above_thres_trucks = sorted([x for x in full_trucks if x[1] &gt; avg_truck_weight], key=lambda el:el[1]/el[2], reverse=True)    
+        weight_target = avg_truck_weight - min_truck[1]
+        min_boxes = sorted(combination_boxes[min_truck[0]],  key=lambda el:el[1]/el[2])
+        for min_box in min_boxes:
+            for max_truck in above_thres_trucks:
+                max_boxes = combination_boxes[max_truck[0]]
+                for max_box in max_boxes:
+                    diff_vol = max_box[2] - min_box[2]
+                    diff_wei = max_box[1] - min_box[1]
+                    if (0 &lt; diff_wei &lt; weight_target) and (min_truck[2] + diff_vol &lt; 100) and (max_truck[2] - diff_vol &lt; 100):
+                        return (min_box, max_box), (min_truck, max_truck)
+    else:
+        max_truck = target_truck
+        below_thres_trucks = sorted([x for x in full_trucks if x[1] &lt; avg_truck_weight], key=lambda el:el[1]/el[2], reverse=True)    
+        weight_target = max_truck[1] - avg_truck_weight
+        max_boxes = sorted(combination_boxes[max_truck[0]],  key=lambda el:el[1]/el[2])
+        for max_box in max_boxes:
+            for min_truck in below_thres_trucks:
+                min_boxes = combination_boxes[min_truck[0]]
+                for min_box in min_boxes:
+                    diff_vol = max_box[2] - min_box[2]
+                    diff_wei = max_box[1] - min_box[1]
+                    if (0 &lt; diff_wei &lt; weight_target) and (min_truck[2] + diff_vol &lt; 100) and (max_truck[2] - diff_vol &lt; 100):
+                        return (min_box, max_box), (min_truck, max_truck)
+    print('no match was found')
+    return 0
+</code></pre>
+
+<p>The idea with the relaxation step is to swap a box from the truck that is furthest from the weight target with another box from a different truck that is on the other side of the target. This has to be done carefully to satisfy the weight limit for each truck. Furthermore, to add more posibilities we will add also the posibility of swapping pairs of boxes (by using the combinations of 2 for each truck).</p>
+
+<pre><code class="language-python">def generate_combinations(boxes_in_truck, combination_boxes, truck_indices = range(100)):
+    for truck in boxes_in_truck:
+        for box in boxes_in_truck[truck]:
+            combination_boxes[truck] = [((box,), box_list[box][1],  box_list[box][2])]
+        combs = combinations(boxes_in_truck[truck], 2)
+        for (box0, box1) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1], box_list[box0][2] + box_list[box1][2]
+            combination_boxes[truck].append(((box0, box1), comb_weight, comb_vol))
+        combs = combinations(boxes_in_truck[truck], 3)
+    return combination_boxes
+</code></pre>
+
+<pre><code class="language-python">combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck_init, combination_boxes)
+output = relaxation(full_trucks_init, combination_boxes_init)
+</code></pre>
+
+<pre><code class="language-python">output    # boxes to be swapped, and trucks from which the boxes will be swapped
+</code></pre>
+
+<pre><code>((((520,), 10.190215910030682, 5.658688253409288),
+  ((19,), 17.067561251729074, 18.518808665178906)),
+ ([79, 318.85433371747, 63.346947915560506],
+  [49, 327.0275509631317, 95.92933411132074]))
+</code></pre>
+
+<p>We need to do the box swapping and compute the score, if things work well we would be able to iterate the relaxation process and continuously reduce the score. In this case it could also happen that no two boxes are found to improve our heuristic, at which point the code will stop.</p>
+
+<pre><code class="language-python">def swap_boxes(output, full_trucks, boxes_in_truck):
+    (min_box, max_box), (min_truck, max_truck) = output
+    for box in min_box[0]:
+        boxes_in_truck[max_truck[0]].append(box)
+        boxes_in_truck[min_truck[0]].remove(box)
+    for box in max_box[0]:
+        boxes_in_truck[min_truck[0]].append(box)
+        boxes_in_truck[max_truck[0]].remove(box)
+    for truck in boxes_in_truck:
+        full_trucks[truck] = [truck, sum(box_list[x][1] for x in boxes_in_truck[truck]), sum(box_list[x][2] for x in boxes_in_truck[truck])]
+    max_truck1 = full_trucks[max_truck[0]]
+    min_truck1 = full_trucks[min_truck[0]]
+    max_trucks, min_trucks = max(full_trucks, key=lambda el:el[1]), min(full_trucks, key=lambda el:el[1])
+    score = max_trucks[1] - min_trucks[1]
+    return score, full_trucks, boxes_in_truck
+</code></pre>
+
+<p>Let&rsquo;s try now 1000 iterations</p>
+
+<pre><code class="language-python">def iterative_relaxation(full_trucks_init, boxes_in_truck_init, combination_boxes_init, print_it = False):
+
+    full_trucks = deepcopy(full_trucks_init)
+    boxes_in_truck = deepcopy(boxes_in_truck_init)
+    combination_boxes = deepcopy(combination_boxes_init)
+    for i in range(1000):
+        output = relaxation(full_trucks, combination_boxes)
+        if output == 0:
+            break
+        score, full_trucks, boxes_in_truck = swap_boxes(output, full_trucks, boxes_in_truck)
+        if print_it:
+            print('iteration', i, 'new score', score)
+        (min_box, max_box), (min_truck, max_truck) = output
+        truck_indices = [min_truck[0], max_truck[0]]
+        combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, truck_indices)
+    return full_trucks, boxes_in_truck
+
+destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, range(100))
+full_trucks, boxes_in_truck = iterative_relaxation(full_trucks, boxes_in_truck, combination_boxes, print_it = True)
+</code></pre>
+
+<pre><code>iteration 0 new score 11.102120422495034
+iteration 1 new score 10.803437865041246
+iteration 2 new score 10.556727174099024
+iteration 3 new score 9.872209963393175
+iteration 4 new score 9.637535031031348
+iteration 5 new score 9.619873789853841
+iteration 6 new score 9.45481362975653
+iteration 7 new score 9.312566423834994
+iteration 8 new score 9.284263098693032
+iteration 9 new score 9.264669155363663
+iteration 10 new score 9.058474149670246
+iteration 11 new score 8.874067157750517
+iteration 12 new score 8.866383785710752
+iteration 13 new score 8.86361202602319
+iteration 14 new score 8.707783024197795
+iteration 15 new score 8.683343261857146
+iteration 16 new score 8.50506069004615
+iteration 17 new score 8.484862681309721
+iteration 18 new score 8.364230834697253
+iteration 19 new score 8.06609307693526
+iteration 20 new score 7.716202207943809
+iteration 21 new score 7.699234956470036
+iteration 22 new score 7.62669351747428
+iteration 23 new score 7.520638272053304
+iteration 24 new score 7.499512852227099
+iteration 25 new score 7.443004678785769
+iteration 26 new score 7.362861882487891
+iteration 27 new score 7.030972267551078
+iteration 28 new score 6.99191791473487
+iteration 29 new score 6.982255965500713
+iteration 30 new score 6.917668823958252
+iteration 31 new score 6.898039944692357
+iteration 32 new score 6.868466646944512
+iteration 33 new score 6.857615783696872
+iteration 34 new score 6.834248504128595
+iteration 35 new score 6.818524234099357
+iteration 36 new score 6.723857821435445
+iteration 37 new score 6.689780493704291
+iteration 38 new score 6.572262458573789
+iteration 39 new score 6.556859858518237
+iteration 40 new score 6.118501063331848
+iteration 41 new score 6.052187868385943
+iteration 42 new score 6.039505607299361
+iteration 43 new score 6.0225469694420894
+iteration 44 new score 5.901090433921013
+iteration 45 new score 5.891469389498468
+iteration 46 new score 5.882881851933632
+iteration 47 new score 5.859598878376403
+iteration 48 new score 5.842011909175767
+iteration 49 new score 5.830237636031654
+iteration 50 new score 5.8119829320971235
+iteration 51 new score 5.54074158439812
+iteration 52 new score 5.524941607245694
+iteration 53 new score 5.476573399469714
+iteration 54 new score 5.34657570098932
+iteration 55 new score 5.341448897663156
+iteration 56 new score 5.33371065060561
+iteration 57 new score 5.312479593172895
+iteration 58 new score 5.2882196529133125
+iteration 59 new score 5.210254176992748
+iteration 60 new score 4.901931416865807
+iteration 61 new score 4.874196552520175
+iteration 62 new score 4.761130678398729
+iteration 63 new score 4.759409792994973
+iteration 64 new score 4.755316758131187
+iteration 65 new score 4.7484012187082385
+iteration 66 new score 4.552165761764911
+iteration 67 new score 4.4843403595612585
+iteration 68 new score 4.478699497215359
+iteration 69 new score 4.467609285685228
+iteration 70 new score 4.4465213194788475
+iteration 71 new score 4.4101605601056235
+iteration 72 new score 4.399642178196871
+iteration 73 new score 4.353509649645787
+iteration 74 new score 4.318747937655189
+iteration 75 new score 4.28940705388203
+iteration 76 new score 4.2579490878868
+iteration 77 new score 4.146569066979168
+iteration 78 new score 4.13079595012664
+iteration 79 new score 4.055180703368933
+iteration 80 new score 4.007437743211881
+iteration 81 new score 3.983145746563082
+iteration 82 new score 3.905575499535871
+iteration 83 new score 3.900817609893579
+iteration 84 new score 3.895357829078705
+iteration 85 new score 3.8916324482835307
+iteration 86 new score 3.866872972415649
+iteration 87 new score 3.846467894404725
+iteration 88 new score 3.8393649205076485
+iteration 89 new score 3.818832506027036
+iteration 90 new score 3.8157898192709467
+iteration 91 new score 3.6977870440933884
+iteration 92 new score 3.696592340799782
+iteration 93 new score 3.6567456316087714
+iteration 94 new score 3.5875337505294738
+iteration 95 new score 3.529151126257375
+iteration 96 new score 3.421131523048416
+iteration 97 new score 3.326887439688903
+iteration 98 new score 3.326695874941663
+iteration 99 new score 3.2690811268305424
+iteration 100 new score 3.204644311622644
+iteration 101 new score 3.20214363509632
+iteration 102 new score 3.1949587216392388
+iteration 103 new score 3.1582447009603243
+iteration 104 new score 3.1443928154942
+iteration 105 new score 2.965362568043645
+iteration 106 new score 2.956264544617909
+iteration 107 new score 2.84639417136043
+iteration 108 new score 2.820144710287707
+iteration 109 new score 2.8072065879118213
+iteration 110 new score 2.743996911608292
+iteration 111 new score 2.7338271886964094
+iteration 112 new score 2.719989124316726
+iteration 113 new score 2.6994414523442174
+iteration 114 new score 2.658912453787593
+iteration 115 new score 2.6575106822821795
+iteration 116 new score 2.639500573223472
+iteration 117 new score 2.599290134189914
+iteration 118 new score 2.5922460153261113
+iteration 119 new score 2.582320157498998
+iteration 120 new score 2.5794451176498114
+iteration 121 new score 2.549567955190412
+iteration 122 new score 2.5119579617974637
+iteration 123 new score 2.4866289058387565
+iteration 124 new score 2.4665669366003726
+iteration 125 new score 2.4596433620635025
+iteration 126 new score 2.458586155418061
+iteration 127 new score 2.4340626970512744
+iteration 128 new score 2.4234120499500023
+iteration 129 new score 2.408950262092503
+iteration 130 new score 2.311539609419185
+iteration 131 new score 2.2441114799627826
+iteration 132 new score 2.242203632264136
+iteration 133 new score 2.1626974858510266
+iteration 134 new score 2.157314517106272
+iteration 135 new score 2.1183291846834322
+iteration 136 new score 2.085837195323279
+iteration 137 new score 2.059460555462522
+iteration 138 new score 2.0512843604931277
+iteration 139 new score 2.0494976965001115
+iteration 140 new score 2.014637147322105
+iteration 141 new score 2.009588157206906
+iteration 142 new score 2.0008750917271527
+iteration 143 new score 1.9492902282493105
+iteration 144 new score 1.931844314987245
+iteration 145 new score 1.9240659944570098
+iteration 146 new score 1.9205955355291167
+iteration 147 new score 1.8655450087921395
+iteration 148 new score 1.8259826509408867
+iteration 149 new score 1.776740644640597
+iteration 150 new score 1.757394346317426
+iteration 151 new score 1.7186412647596399
+iteration 152 new score 1.714076300817851
+iteration 153 new score 1.7055508597586595
+iteration 154 new score 1.7020910645549634
+iteration 155 new score 1.6781477017725592
+iteration 156 new score 1.6670924130555704
+iteration 157 new score 1.6502753836718398
+iteration 158 new score 1.6296914480884084
+iteration 159 new score 1.6071983960187026
+iteration 160 new score 1.599789354459972
+iteration 161 new score 1.5720058093418174
+iteration 162 new score 1.5621314610028207
+iteration 163 new score 1.5189244081056472
+iteration 164 new score 1.5182528464554252
+iteration 165 new score 1.5177432982123378
+iteration 166 new score 1.5107116864350019
+iteration 167 new score 1.4709664292391835
+iteration 168 new score 1.4373346356725278
+iteration 169 new score 1.4103822224837472
+iteration 170 new score 1.4101661110339023
+iteration 171 new score 1.4069641942562612
+iteration 172 new score 1.3777415487879239
+iteration 173 new score 1.372335666229219
+iteration 174 new score 1.3715021445562456
+iteration 175 new score 1.3668169784870088
+iteration 176 new score 1.362744816129748
+iteration 177 new score 1.343184937323997
+iteration 178 new score 1.3407593545961731
+iteration 179 new score 1.3394952057059868
+iteration 180 new score 1.320966333656031
+iteration 181 new score 1.317324602023291
+iteration 182 new score 1.3011442519477896
+iteration 183 new score 1.2878030980360222
+iteration 184 new score 1.2498761057718184
+iteration 185 new score 1.2314909203363413
+iteration 186 new score 1.2128762164205114
+iteration 187 new score 1.1771645617965873
+iteration 188 new score 1.163071269838042
+iteration 189 new score 1.1152541690337898
+iteration 190 new score 1.07038782622908
+iteration 191 new score 1.0388522808829066
+iteration 192 new score 1.0344498796657717
+iteration 193 new score 1.0338292838875986
+iteration 194 new score 0.9868113661124198
+iteration 195 new score 0.9844378532720839
+iteration 196 new score 0.9730323455984831
+iteration 197 new score 0.9334360279028715
+iteration 198 new score 0.9061417900925335
+iteration 199 new score 0.9015146595935448
+iteration 200 new score 0.8984074929865073
+iteration 201 new score 0.8972270336691963
+iteration 202 new score 0.8871976089108671
+iteration 203 new score 0.8698921218881992
+iteration 204 new score 0.8222524902885766
+iteration 205 new score 0.8196796142646576
+iteration 206 new score 0.8137300565508667
+iteration 207 new score 0.8050501248901583
+iteration 208 new score 0.7876207779222568
+iteration 209 new score 0.7829188129514932
+iteration 210 new score 0.7758134157795666
+iteration 211 new score 0.7725248845300712
+iteration 212 new score 0.7602636140546792
+iteration 213 new score 0.7581401624801174
+iteration 214 new score 0.7557534649737363
+iteration 215 new score 0.7514425009836714
+iteration 216 new score 0.7471160682032973
+iteration 217 new score 0.74633693700207
+iteration 218 new score 0.745683062731473
+iteration 219 new score 0.7450279556583155
+iteration 220 new score 0.7443705083659893
+iteration 221 new score 0.7384165206693751
+iteration 222 new score 0.726374757895826
+iteration 223 new score 0.6953699118400891
+iteration 224 new score 0.6813851960324655
+iteration 225 new score 0.6800359781387897
+iteration 226 new score 0.6738532017331522
+iteration 227 new score 0.6642709029973162
+iteration 228 new score 0.6497296700703146
+iteration 229 new score 0.6439221533350974
+iteration 230 new score 0.640045553345999
+iteration 231 new score 0.6151924705275178
+iteration 232 new score 0.6099124417955863
+iteration 233 new score 0.6056627920011692
+iteration 234 new score 0.6027563602252712
+iteration 235 new score 0.5988875617086933
+iteration 236 new score 0.58120773566759
+iteration 237 new score 0.5805082243700213
+iteration 238 new score 0.5762602730906679
+iteration 239 new score 0.5718047671407476
+iteration 240 new score 0.5711264061272345
+iteration 241 new score 0.5614248305427623
+iteration 242 new score 0.5605706027023416
+iteration 243 new score 0.5524441510116276
+iteration 244 new score 0.5507725933348411
+iteration 245 new score 0.544893740997054
+iteration 246 new score 0.5338422317213372
+iteration 247 new score 0.5335000209664145
+iteration 248 new score 0.5231943429420198
+iteration 249 new score 0.50811428852154
+iteration 250 new score 0.49325393048104615
+iteration 251 new score 0.4747514892586082
+iteration 252 new score 0.4635119996796675
+iteration 253 new score 0.46077513505298384
+iteration 254 new score 0.4580022567790252
+iteration 255 new score 0.4560858258095095
+iteration 256 new score 0.4434502078805167
+iteration 257 new score 0.43876036794955553
+iteration 258 new score 0.4364700210010142
+iteration 259 new score 0.43638792274680327
+iteration 260 new score 0.42312252555228724
+iteration 261 new score 0.42087017674668914
+iteration 262 new score 0.3960045387973423
+iteration 263 new score 0.3909804695688308
+iteration 264 new score 0.3872158982395604
+iteration 265 new score 0.38707813092588594
+iteration 266 new score 0.3781030236754077
+iteration 267 new score 0.36998782393698093
+iteration 268 new score 0.3662472424910561
+iteration 269 new score 0.3577861409517027
+iteration 270 new score 0.3555666688392307
+iteration 271 new score 0.3447497605110925
+iteration 272 new score 0.3414371862870098
+iteration 273 new score 0.3379750947889306
+iteration 274 new score 0.3286513910920803
+iteration 275 new score 0.32678596424989337
+iteration 276 new score 0.32648187075091073
+iteration 277 new score 0.3254216925374749
+iteration 278 new score 0.324504799998806
+iteration 279 new score 0.32126727650768316
+iteration 280 new score 0.3109030615968891
+iteration 281 new score 0.2965021823893039
+iteration 282 new score 0.2956344380034466
+iteration 283 new score 0.2894449284461871
+iteration 284 new score 0.28677010155280414
+iteration 285 new score 0.2849060381876143
+iteration 286 new score 0.28228342088749514
+iteration 287 new score 0.2812765416692855
+iteration 288 new score 0.2777594759905355
+iteration 289 new score 0.26788373284114186
+iteration 290 new score 0.2660210454470189
+iteration 291 new score 0.265902779523401
+iteration 292 new score 0.2644217733482037
+iteration 293 new score 0.26325984168187233
+iteration 294 new score 0.2595767086630758
+iteration 295 new score 0.25854492421564146
+iteration 296 new score 0.24979605568813668
+iteration 297 new score 0.24833947835583103
+iteration 298 new score 0.24331650535015115
+iteration 299 new score 0.24263551729978872
+iteration 300 new score 0.24149881132672135
+iteration 301 new score 0.2403625478129925
+iteration 302 new score 0.2356536960424478
+iteration 303 new score 0.23446697442369668
+iteration 304 new score 0.23251078304787143
+iteration 305 new score 0.21604065318626908
+iteration 306 new score 0.21592826091159623
+iteration 307 new score 0.20915355905043498
+iteration 308 new score 0.20839555058148562
+iteration 309 new score 0.2065737950453581
+iteration 310 new score 0.20604392213186884
+iteration 311 new score 0.20545241668037306
+iteration 312 new score 0.2037293845906447
+iteration 313 new score 0.20154167890524377
+iteration 314 new score 0.20119570839966627
+iteration 315 new score 0.19994330078031908
+iteration 316 new score 0.19915551667133968
+iteration 317 new score 0.19725276152632887
+iteration 318 new score 0.19612372404014877
+iteration 319 new score 0.19592557945355793
+iteration 320 new score 0.19485048544834171
+iteration 321 new score 0.1938121487631861
+iteration 322 new score 0.1937760790836478
+iteration 323 new score 0.19330323648040348
+iteration 324 new score 0.19192551150138115
+iteration 325 new score 0.19100404502461288
+iteration 326 new score 0.17949088646412292
+iteration 327 new score 0.1780888962431959
+iteration 328 new score 0.17573615451249225
+iteration 329 new score 0.1757174286029226
+iteration 330 new score 0.1731677576235029
+iteration 331 new score 0.17148529564246928
+iteration 332 new score 0.1712913350903591
+iteration 333 new score 0.17011400212214767
+iteration 334 new score 0.16937942318111254
+iteration 335 new score 0.16806427433033377
+iteration 336 new score 0.16301801714962494
+iteration 337 new score 0.16179021770568625
+iteration 338 new score 0.160121399537843
+iteration 339 new score 0.15994969523433156
+iteration 340 new score 0.15703493316920003
+iteration 341 new score 0.15374594433438915
+iteration 342 new score 0.15297007141577978
+iteration 343 new score 0.15266735172099288
+iteration 344 new score 0.15217933991675636
+iteration 345 new score 0.1514061400005744
+iteration 346 new score 0.14893240539311137
+iteration 347 new score 0.14608806426377896
+iteration 348 new score 0.1436261656529041
+iteration 349 new score 0.14181461261938466
+iteration 350 new score 0.14003454564226558
+iteration 351 new score 0.1399603408278267
+iteration 352 new score 0.13726236154184335
+iteration 353 new score 0.1365522077360879
+iteration 354 new score 0.13269720399250673
+iteration 355 new score 0.132099089775636
+iteration 356 new score 0.12778242374128013
+iteration 357 new score 0.12755064488231938
+iteration 358 new score 0.12743226510275463
+iteration 359 new score 0.12594341859175984
+iteration 360 new score 0.12362995385234399
+iteration 361 new score 0.12255659159848165
+iteration 362 new score 0.12023979241325833
+iteration 363 new score 0.1173321443713462
+iteration 364 new score 0.11535897984327903
+iteration 365 new score 0.11471185272529283
+iteration 366 new score 0.11381850292281115
+iteration 367 new score 0.11312049001236346
+iteration 368 new score 0.11296961372846681
+iteration 369 new score 0.11236455938484369
+iteration 370 new score 0.11180785745210642
+iteration 371 new score 0.11160922229163361
+iteration 372 new score 0.11066512034682319
+iteration 373 new score 0.1104826472771947
+iteration 374 new score 0.10959317642078759
+iteration 375 new score 0.1091951426657829
+iteration 376 new score 0.10831062137305025
+iteration 377 new score 0.10457692503962335
+iteration 378 new score 0.10435362028528061
+iteration 379 new score 0.10228065152625732
+iteration 380 new score 0.10195955442929971
+iteration 381 new score 0.09752800974501952
+no match was found
+</code></pre>
+
+<pre><code class="language-python">print_score(full_trucks)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [85, 319.10082259343966, 99.19257020620017]
+min weight truck (index, weight, vol) = [40, 319.00329458369464, 86.31432923355682]
+score (max-min) = 0.09752800974501952
+</code></pre>
+
+<p>The new score improved <strong>100+</strong> from the the initial distribution! Let&rsquo;s see if we can do better adding combinations of 3</p>
+
+<pre><code class="language-python">def generate_combinations(boxes_in_truck, combination_boxes, truck_indices = range(100)):
+    for truck in boxes_in_truck:
+        for box in boxes_in_truck[truck]:
+            combination_boxes[truck] = [((box,), box_list[box][1],  box_list[box][2])]
+        combs = combinations(boxes_in_truck[truck], 2)
+        for (box0, box1) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1], box_list[box0][2] + box_list[box1][2]
+            combination_boxes[truck].append(((box0, box1), comb_weight, comb_vol))
+        combs = combinations(boxes_in_truck[truck], 3)
+        for (box0, box1, box2) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1] + box_list[box2][1], box_list[box0][2] + box_list[box1][2] + box_list[box2][2]
+            combination_boxes[truck].append(((box0, box1, box2), comb_weight, comb_vol))
+    return combination_boxes
+
+destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, range(100))
+full_trucks, boxes_in_truck = iterative_relaxation(full_trucks, boxes_in_truck, combination_boxes, print_it = True)
+</code></pre>
+
+<pre><code>iteration 0 new score 11.102120422495034
+iteration 1 new score 10.803437865041246
+iteration 2 new score 10.556727174099024
+iteration 3 new score 9.872209963393175
+iteration 4 new score 9.637535031031348
+iteration 5 new score 9.619873789853841
+iteration 6 new score 9.45481362975653
+iteration 7 new score 9.312566423834994
+iteration 8 new score 9.284263098693032
+iteration 9 new score 9.264669155363663
+iteration 10 new score 9.058474149670246
+iteration 11 new score 8.874067157750517
+iteration 12 new score 8.866383785710752
+iteration 13 new score 8.86361202602319
+iteration 14 new score 8.707783024197795
+iteration 15 new score 8.683343261857146
+iteration 16 new score 8.50506069004615
+iteration 17 new score 8.484862681309721
+iteration 18 new score 8.364230834697253
+iteration 19 new score 8.06609307693526
+iteration 20 new score 7.716202207943809
+iteration 21 new score 7.699234956470036
+iteration 22 new score 7.62669351747428
+iteration 23 new score 7.520638272053304
+iteration 24 new score 7.499512852227099
+iteration 25 new score 7.443004678785769
+iteration 26 new score 7.362861882487891
+iteration 27 new score 7.030972267551078
+iteration 28 new score 6.99191791473487
+iteration 29 new score 6.982255965500713
+iteration 30 new score 6.917668823958252
+iteration 31 new score 6.898039944692357
+iteration 32 new score 6.868466646944512
+iteration 33 new score 6.857615783696872
+iteration 34 new score 6.834248504128595
+iteration 35 new score 6.818524234099357
+iteration 36 new score 6.723857821435445
+iteration 37 new score 6.689780493704291
+iteration 38 new score 6.572262458573789
+iteration 39 new score 6.556859858518237
+iteration 40 new score 6.118501063331848
+iteration 41 new score 6.052187868385943
+iteration 42 new score 6.039505607299361
+iteration 43 new score 6.0225469694420894
+iteration 44 new score 5.901090433921013
+iteration 45 new score 5.891469389498468
+iteration 46 new score 5.882881851933632
+iteration 47 new score 5.859598878376403
+iteration 48 new score 5.842011909175767
+iteration 49 new score 5.830237636031654
+iteration 50 new score 5.8119829320971235
+iteration 51 new score 5.54074158439812
+iteration 52 new score 5.524941607245694
+iteration 53 new score 5.476573399469714
+iteration 54 new score 5.325344643556605
+iteration 55 new score 5.320217840230441
+iteration 56 new score 5.312479593172895
+iteration 57 new score 5.2882196529133125
+iteration 58 new score 5.210254176992748
+iteration 59 new score 5.055273281106054
+iteration 60 new score 5.027538416760422
+iteration 61 new score 4.9144725426389755
+iteration 62 new score 4.8383751774644566
+iteration 63 new score 4.8366542920607
+iteration 64 new score 4.825645717773966
+iteration 65 new score 4.79423198937468
+iteration 66 new score 4.71545330845322
+iteration 67 new score 4.622278122871819
+iteration 68 new score 4.555986902523898
+iteration 69 new score 4.4843403595612585
+iteration 70 new score 4.478699497215359
+iteration 71 new score 4.467609285685228
+iteration 72 new score 4.4465213194788475
+iteration 73 new score 4.434103792464953
+iteration 74 new score 4.382762083769705
+iteration 75 new score 4.353509649645787
+iteration 76 new score 4.287289971659959
+iteration 77 new score 4.2579490878868
+iteration 78 new score 4.151572338953031
+iteration 79 new score 4.060183975342795
+iteration 80 new score 4.055180703368933
+iteration 81 new score 4.007449830038695
+iteration 82 new score 3.983157833389896
+iteration 83 new score 3.905587586362685
+iteration 84 new score 3.905575499535871
+iteration 85 new score 3.900817609893579
+iteration 86 new score 3.8916324482835307
+iteration 87 new score 3.866872972415649
+iteration 88 new score 3.8259354799241123
+iteration 89 new score 3.818832506027036
+iteration 90 new score 3.6977870440933884
+iteration 91 new score 3.696592340799782
+iteration 92 new score 3.6567456316087714
+iteration 93 new score 3.494732951198955
+iteration 94 new score 3.324195198415339
+iteration 95 new score 3.2254108592903776
+iteration 96 new score 3.2118585901453116
+iteration 97 new score 3.19961064138937
+iteration 98 new score 3.1912753994896548
+iteration 99 new score 3.168008175295597
+iteration 100 new score 3.1582447009603243
+iteration 101 new score 3.135294792068464
+iteration 102 new score 2.9117090853538343
+iteration 103 new score 2.7626511286477466
+iteration 104 new score 2.729221907521662
+iteration 105 new score 2.7101444956433625
+iteration 106 new score 2.6994414523442174
+iteration 107 new score 2.662202065959775
+iteration 108 new score 2.613393036506693
+iteration 109 new score 2.606533084489854
+iteration 110 new score 2.6030593054707083
+iteration 111 new score 2.593133447643595
+iteration 112 new score 2.582320157498998
+iteration 113 new score 2.549567955190412
+iteration 114 new score 2.4600257643441523
+iteration 115 new score 2.434696708385445
+iteration 116 new score 2.427773133848575
+iteration 117 new score 2.4276234548149205
+iteration 118 new score 2.4156656692293836
+iteration 119 new score 2.4032496754817885
+iteration 120 new score 2.378005624248601
+iteration 121 new score 2.3416764127683223
+iteration 122 new score 2.3328286242093554
+iteration 123 new score 2.32282362214562
+iteration 124 new score 2.3115514541454445
+iteration 125 new score 2.2357494999865253
+iteration 126 new score 2.223393960734711
+iteration 127 new score 2.1750354575834194
+iteration 128 new score 2.1723677843256155
+iteration 129 new score 2.168104064350416
+iteration 130 new score 2.1465311551687023
+iteration 131 new score 2.1010471712593812
+iteration 132 new score 2.0856336968903406
+iteration 133 new score 2.060071738285444
+iteration 134 new score 2.0172242433051792
+iteration 135 new score 2.01217525318998
+iteration 136 new score 1.9923371285250937
+iteration 137 new score 1.9518773242323846
+iteration 138 new score 1.9463625323069778
+iteration 139 new score 1.9393350952959736
+iteration 140 new score 1.9240659944570098
+iteration 141 new score 1.917308186459934
+iteration 142 new score 1.8655450087921395
+iteration 143 new score 1.8290445896757888
+iteration 144 new score 1.776740644640597
+iteration 145 new score 1.7621818363065245
+iteration 146 new score 1.7440549877413218
+iteration 147 new score 1.6907689466589204
+iteration 148 new score 1.6722658285804641
+iteration 149 new score 1.6687204403111764
+iteration 150 new score 1.6502753836718398
+iteration 151 new score 1.6441387026438292
+iteration 152 new score 1.5947748378338247
+iteration 153 new score 1.5860667749328172
+iteration 154 new score 1.5803275832784038
+iteration 155 new score 1.5729185417196732
+iteration 156 new score 1.5614423669314306
+iteration 157 new score 1.5369222749308733
+iteration 158 new score 1.5364573266298862
+iteration 159 new score 1.5301308356505956
+iteration 160 new score 1.4770798928683462
+iteration 161 new score 1.4527368283152668
+iteration 162 new score 1.4242835101448463
+iteration 163 new score 1.4060876429911104
+iteration 164 new score 1.3931942347786617
+iteration 165 new score 1.390852529915037
+iteration 166 new score 1.3870023164556642
+iteration 167 new score 1.3828903478687948
+iteration 168 new score 1.3356747178989394
+iteration 169 new score 1.3268245852093514
+iteration 170 new score 1.3067755628762256
+iteration 171 new score 1.2993991894938404
+iteration 172 new score 1.2368719994584012
+iteration 173 new score 1.2348929751304354
+iteration 174 new score 1.217487987147365
+iteration 175 new score 1.1971633673200586
+iteration 176 new score 1.1543304652157076
+iteration 177 new score 1.1215530105405946
+iteration 178 new score 1.101502766292981
+iteration 179 new score 1.0695575010200855
+iteration 180 new score 1.0414081730873477
+iteration 181 new score 1.030552626637757
+iteration 182 new score 1.0230928558013943
+iteration 183 new score 1.000781659633617
+iteration 184 new score 0.9987358748114161
+iteration 185 new score 0.9930770197356082
+iteration 186 new score 0.9781007635335186
+iteration 187 new score 0.9589245346891175
+iteration 188 new score 0.9259995599530839
+iteration 189 new score 0.9162206033168445
+iteration 190 new score 0.9021932460149173
+iteration 191 new score 0.9019212696128989
+iteration 192 new score 0.8989092265172758
+iteration 193 new score 0.8940034507024848
+iteration 194 new score 0.8798532103958792
+iteration 195 new score 0.873627292687388
+iteration 196 new score 0.8720308560821763
+iteration 197 new score 0.8618182127650584
+iteration 198 new score 0.8577362348763131
+iteration 199 new score 0.8484583394632068
+iteration 200 new score 0.841610861189622
+iteration 201 new score 0.8410914712674185
+iteration 202 new score 0.826543366756141
+iteration 203 new score 0.805479641943009
+iteration 204 new score 0.7898273839644503
+iteration 205 new score 0.7845354428815767
+iteration 206 new score 0.7731358099057388
+iteration 207 new score 0.7637648676624735
+iteration 208 new score 0.7635518339048417
+iteration 209 new score 0.7586526728937315
+iteration 210 new score 0.7544955371476476
+iteration 211 new score 0.7531953113045233
+iteration 212 new score 0.7453934930646824
+iteration 213 new score 0.7453338562808653
+iteration 214 new score 0.7403352351639114
+iteration 215 new score 0.711248488592048
+iteration 216 new score 0.7068342666764238
+iteration 217 new score 0.6823060191449599
+iteration 218 new score 0.6742738359916984
+iteration 219 new score 0.6733542468792848
+iteration 220 new score 0.6729301943054793
+iteration 221 new score 0.6721412772185431
+iteration 222 new score 0.668009688775669
+iteration 223 new score 0.6671488907440448
+iteration 224 new score 0.6515359164083634
+iteration 225 new score 0.6454158303720305
+iteration 226 new score 0.640176099793166
+iteration 227 new score 0.6320256263557553
+iteration 228 new score 0.6210326955369396
+iteration 229 new score 0.6152468309928736
+iteration 230 new score 0.6071774146135454
+iteration 231 new score 0.5690884181001366
+iteration 232 new score 0.5662902443472717
+iteration 233 new score 0.5624048384095204
+iteration 234 new score 0.540305313539136
+iteration 235 new score 0.5003467237689279
+iteration 236 new score 0.49666299700936634
+iteration 237 new score 0.48913024625483104
+iteration 238 new score 0.4742670798691506
+iteration 239 new score 0.47120174894257616
+iteration 240 new score 0.4588067177729158
+iteration 241 new score 0.4568490396637799
+iteration 242 new score 0.455497260746597
+iteration 243 new score 0.4524958371180219
+iteration 244 new score 0.4486890804700465
+iteration 245 new score 0.44398969268320343
+iteration 246 new score 0.43775992330188274
+iteration 247 new score 0.4166113548556609
+iteration 248 new score 0.3994769179267337
+iteration 249 new score 0.3872100350755545
+iteration 250 new score 0.3847278554470108
+iteration 251 new score 0.37570200918349883
+iteration 252 new score 0.37420367671791155
+iteration 253 new score 0.3707133233356217
+iteration 254 new score 0.36232934103446723
+iteration 255 new score 0.3601960891293743
+iteration 256 new score 0.3529950416002521
+iteration 257 new score 0.3485833914017462
+iteration 258 new score 0.3468345417371097
+iteration 259 new score 0.3426604966894047
+iteration 260 new score 0.3346854362441718
+iteration 261 new score 0.33292018807992463
+iteration 262 new score 0.32918527704492817
+iteration 263 new score 0.32596243774611366
+iteration 264 new score 0.3233199186652769
+iteration 265 new score 0.32310420062918865
+iteration 266 new score 0.32142821595482474
+iteration 267 new score 0.3207440591649515
+iteration 268 new score 0.3185120816688709
+iteration 269 new score 0.31010904343577295
+iteration 270 new score 0.309951014024648
+iteration 271 new score 0.30516143953934716
+iteration 272 new score 0.30424521755981004
+iteration 273 new score 0.2972132058999932
+iteration 274 new score 0.28128860697995606
+iteration 275 new score 0.27717115595669384
+iteration 276 new score 0.27141493918634296
+iteration 277 new score 0.2632119456361579
+iteration 278 new score 0.26150634430541686
+iteration 279 new score 0.24560874954767087
+iteration 280 new score 0.2455897859724132
+iteration 281 new score 0.2448200905930662
+iteration 282 new score 0.2403993822974826
+iteration 283 new score 0.23486074773194332
+iteration 284 new score 0.23448516486979543
+iteration 285 new score 0.23395090101189453
+iteration 286 new score 0.23082552814253177
+iteration 287 new score 0.22795407755165797
+iteration 288 new score 0.22484083121696585
+iteration 289 new score 0.2235487561990226
+iteration 290 new score 0.22234627293374842
+iteration 291 new score 0.21974678070603204
+iteration 292 new score 0.21256135774871154
+iteration 293 new score 0.20877587818074517
+iteration 294 new score 0.20795888136245821
+iteration 295 new score 0.20533692486316113
+iteration 296 new score 0.20340176241649033
+iteration 297 new score 0.20067803691341624
+iteration 298 new score 0.19876313873868412
+iteration 299 new score 0.1851522690535603
+iteration 300 new score 0.18494427711590333
+iteration 301 new score 0.18192101090704682
+iteration 302 new score 0.18101297465017296
+iteration 303 new score 0.17987201104904216
+iteration 304 new score 0.17885611562718395
+iteration 305 new score 0.1722482265370786
+iteration 306 new score 0.16835741288053896
+iteration 307 new score 0.16490516226696172
+iteration 308 new score 0.1629654719821474
+iteration 309 new score 0.1621164711758638
+iteration 310 new score 0.1614336422533711
+iteration 311 new score 0.161097282901153
+iteration 312 new score 0.1597052096852849
+iteration 313 new score 0.15959735046993728
+iteration 314 new score 0.1575787000495552
+iteration 315 new score 0.15628662503161195
+iteration 316 new score 0.14913955480187724
+iteration 317 new score 0.14802753527828827
+iteration 318 new score 0.14723083746235943
+iteration 319 new score 0.14688958075299752
+iteration 320 new score 0.14647550489758032
+iteration 321 new score 0.14642724428296106
+iteration 322 new score 0.14623375888356804
+iteration 323 new score 0.14394096462189054
+iteration 324 new score 0.14164915015783208
+iteration 325 new score 0.14086222462850628
+iteration 326 new score 0.13757694317575897
+iteration 327 new score 0.13688436416487093
+iteration 328 new score 0.13548133102278825
+iteration 329 new score 0.13401039270939918
+iteration 330 new score 0.12995104649166933
+iteration 331 new score 0.12720435184530743
+iteration 332 new score 0.12355546890177038
+iteration 333 new score 0.12345275781939336
+iteration 334 new score 0.1224370738284506
+iteration 335 new score 0.12200780531918554
+iteration 336 new score 0.1192518112268317
+iteration 337 new score 0.11913786569812146
+iteration 338 new score 0.11581524129519494
+iteration 339 new score 0.11517122855457274
+iteration 340 new score 0.11069457182821907
+iteration 341 new score 0.1103650280311399
+iteration 342 new score 0.1095178927263305
+iteration 343 new score 0.10828689657591895
+iteration 344 new score 0.10658317022586061
+iteration 345 new score 0.10507399429582165
+iteration 346 new score 0.1043720825435912
+iteration 347 new score 0.1025721822380774
+iteration 348 new score 0.10195762270382147
+iteration 349 new score 0.10192699711581099
+iteration 350 new score 0.10170450287677113
+iteration 351 new score 0.10144618428643071
+iteration 352 new score 0.09609822387977829
+iteration 353 new score 0.09260063867503732
+iteration 354 new score 0.09253152895905714
+iteration 355 new score 0.09227155191734937
+iteration 356 new score 0.09115360806936224
+iteration 357 new score 0.088763005338933
+iteration 358 new score 0.08873864358758965
+iteration 359 new score 0.0854735665144517
+iteration 360 new score 0.08356710939006007
+iteration 361 new score 0.0829990403691454
+iteration 362 new score 0.08233365098436707
+iteration 363 new score 0.08160842806699975
+iteration 364 new score 0.08050743249918924
+iteration 365 new score 0.07827544761568106
+iteration 366 new score 0.0757388648036681
+iteration 367 new score 0.07540057023464897
+iteration 368 new score 0.07354437474697306
+iteration 369 new score 0.07281187793279287
+iteration 370 new score 0.07153693953813445
+iteration 371 new score 0.07085621237047235
+iteration 372 new score 0.06987730509740686
+iteration 373 new score 0.06951833834847321
+iteration 374 new score 0.06670451828034629
+iteration 375 new score 0.06574020729641461
+iteration 376 new score 0.06309448132344642
+iteration 377 new score 0.06289899461614823
+iteration 378 new score 0.06188682718561722
+iteration 379 new score 0.06158934428850671
+iteration 380 new score 0.06017237598109659
+iteration 381 new score 0.05870118115410605
+iteration 382 new score 0.05699025119332646
+iteration 383 new score 0.05346288054732895
+iteration 384 new score 0.051701187206845134
+iteration 385 new score 0.05144937742079492
+iteration 386 new score 0.05050702393162965
+iteration 387 new score 0.05018877582983805
+iteration 388 new score 0.0493001068700778
+iteration 389 new score 0.04773564905127614
+iteration 390 new score 0.047133364820297174
+iteration 391 new score 0.04593648000331996
+iteration 392 new score 0.0458641380103586
+iteration 393 new score 0.04571776893993729
+iteration 394 new score 0.04567782678219601
+iteration 395 new score 0.0449293045225545
+iteration 396 new score 0.04432584389002159
+iteration 397 new score 0.042970538569534256
+iteration 398 new score 0.04295012414985422
+iteration 399 new score 0.04072853118788089
+iteration 400 new score 0.04065279215762985
+iteration 401 new score 0.04055107489494958
+iteration 402 new score 0.04038110098991865
+iteration 403 new score 0.040334881765602404
+iteration 404 new score 0.0391683381209873
+iteration 405 new score 0.038926828876924446
+iteration 406 new score 0.0385894494357899
+iteration 407 new score 0.0376007779306633
+iteration 408 new score 0.03713111112614342
+no match was found
+</code></pre>
+
+<pre><code class="language-python">print_score(full_trucks)
+</code></pre>
+
+<pre><code>max weight truck (index, weight, vol) = [1, 319.0703558169532, 91.64541520557478]
+min weight truck (index, weight, vol) = [84, 319.0332247058271, 79.75220766741351]
+score (max-min) = 0.03713111112614342
+</code></pre>
+
+<p>The score decreased by more than half, which is pretty good, but not as dramatic as the first time we tried the relaxation algorithm. On top of that, the code is starting to run a bit slow. The algorithm with the 3-way combinations is starting to take a bit of time, around 4 seconds in my computer. It might be a good time to do some profiling to see if there&rsquo;s anything we can improve</p>
+
+<pre><code class="language-python">import cProfile
+
+destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes_init = generate_combinations(boxes_in_truck, combination_boxes, range(100))
+# full_trucks, boxes_in_truck = iterative_relaxation(full_trucks_init, combination_boxes_init)
+cProfile.run('iterative_relaxation(full_trucks, boxes_in_truck, combination_boxes)', sort='cumulative')
+
+</code></pre>
+
+<pre><code>no match was found
+         2666915 function calls (2625515 primitive calls) in 1.919 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    1.956    1.956 {built-in method builtins.exec}
+        1    0.000    0.000    1.956    1.956 &lt;string&gt;:1(&lt;module&gt;)
+        1    0.001    0.001    1.956    1.956 &lt;ipython-input-300-ca12649ae6a4&gt;:1(iterative_relaxation)
+      409    1.099    0.003    1.195    0.003 &lt;ipython-input-304-d1c4a30d32dc&gt;:1(generate_combinations)
+      410    0.463    0.001    0.499    0.001 &lt;ipython-input-252-89df8e1dc7d5&gt;:1(relaxation)
+      409    0.029    0.000    0.183    0.000 &lt;ipython-input-288-6ce0923584f0&gt;:1(swap_boxes)
+    81800    0.063    0.000    0.135    0.000 {built-in method builtins.sum}
+  1889663    0.098    0.000    0.098    0.000 {method 'append' of 'list' objects}
+  32003/3    0.032    0.000    0.077    0.026 copy.py:132(deepcopy)
+        2    0.000    0.000    0.076    0.038 copy.py:236(_deepcopy_dict)
+  301/201    0.003    0.000    0.076    0.000 copy.py:210(_deepcopy_list)
+9300/4650    0.017    0.000    0.063    0.000 copy.py:219(_deepcopy_tuple)
+9300/4650    0.009    0.000    0.055    0.000 copy.py:220(&lt;listcomp&gt;)
+   306750    0.034    0.000    0.034    0.000 &lt;ipython-input-288-6ce0923584f0&gt;:10(&lt;genexpr&gt;)
+      819    0.014    0.000    0.027    0.000 {built-in method builtins.max}
+      820    0.011    0.000    0.016    0.000 {built-in method builtins.sorted}
+    41000    0.008    0.000    0.010    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:6(&lt;lambda&gt;)
+    64006    0.009    0.000    0.009    0.000 {method 'get' of 'dict' objects}
+      409    0.006    0.000    0.009    0.000 {built-in method builtins.min}
+    81800    0.006    0.000    0.006    0.000 &lt;ipython-input-288-6ce0923584f0&gt;:13(&lt;lambda&gt;)
+    41912    0.004    0.000    0.004    0.000 {built-in method builtins.id}
+    22400    0.002    0.000    0.002    0.000 copy.py:190(_deepcopy_atomic)
+    41000    0.002    0.000    0.002    0.000 {built-in method builtins.abs}
+      222    0.002    0.000    0.002    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:22(&lt;listcomp&gt;)
+    11699    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:22(&lt;lambda&gt;)
+      188    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:9(&lt;listcomp&gt;)
+    10920    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:24(&lt;lambda&gt;)
+     9171    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:9(&lt;lambda&gt;)
+     8306    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:11(&lt;lambda&gt;)
+     1555    0.000    0.000    0.000    0.000 {method 'remove' of 'list' objects}
+      303    0.000    0.000    0.000    0.000 copy.py:252(_keep_alive)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.print}
+        2    0.000    0.000    0.000    0.000 iostream.py:342(write)
+        3    0.000    0.000    0.000    0.000 iostream.py:180(schedule)
+        3    0.000    0.000    0.000    0.000 threading.py:1104(is_alive)
+        2    0.000    0.000    0.000    0.000 iostream.py:297(_schedule_flush)
+        3    0.000    0.000    0.000    0.000 {built-in method posix.urandom}
+        3    0.000    0.000    0.000    0.000 threading.py:1062(_wait_for_tstate_lock)
+        2    0.000    0.000    0.000    0.000 iostream.py:284(_is_master_process)
+        3    0.000    0.000    0.000    0.000 iostream.py:87(_event_pipe)
+        3    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.lock' objects}
+        2    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+        2    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        3    0.000    0.000    0.000    0.000 threading.py:506(is_set)
+        2    0.000    0.000    0.000    0.000 {built-in method posix.getpid}
+</code></pre>
+
+<p>Over 75% of the time is spent on the generate_combinations algorithm, it might be worth it to try to improve it, an obvious way would be to just update the boxes that are swapped at each iteration rather than fully generating it at each step. The swap_boxes algorithm is also up there with around 10% usage, looking at the function it&rsquo;s easy to see that we are generating the whole full_trucks list when we could just update the two trucks that swap boxes.</p>
+
+<pre><code class="language-python">def generate_combinations(boxes_in_truck, combination_boxes, truck_indices = range(100)):
+    boxes_in_truck = {x:boxes_in_truck[x] for x in truck_indices}
+    for truck in boxes_in_truck:
+        for box in boxes_in_truck[truck]:
+            combination_boxes[truck] = [((box,), box_list[box][1],  box_list[box][2])]
+        combs = combinations(boxes_in_truck[truck], 2)
+        for (box0, box1) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1], box_list[box0][2] + box_list[box1][2]
+            combination_boxes[truck].append(((box0, box1), comb_weight, comb_vol))
+        combs = combinations(boxes_in_truck[truck], 3)
+        for (box0, box1, box2) in combs:
+            comb_weight, comb_vol = box_list[box0][1] + box_list[box1][1] + box_list[box2][1], box_list[box0][2] + box_list[box1][2] + box_list[box2][2]
+            combination_boxes[truck].append(((box0, box1, box2), comb_weight, comb_vol))
+    return combination_boxes
+
+def iterative_relaxation(full_trucks_init, boxes_in_truck_init, combination_boxes, print_it = False):
+    full_trucks = deepcopy(full_trucks_init)
+    boxes_in_truck = deepcopy(boxes_in_truck_init)
+    for i in range(1000):
+        output = relaxation(full_trucks, combination_boxes)
+        if output == 0:
+            print('iterations = ', i)
+            break
+        score, full_trucks, boxes_in_truck = swap_boxes(output, full_trucks, boxes_in_truck)
+        if print_it:
+            print('iteration', i, 'score =', score)
+        (min_box, max_box), (min_truck, max_truck) = output
+        truck_indices = [min_truck[0], max_truck[0]]
+        combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, truck_indices)
+    return full_trucks, boxes_in_truck
+
+def swap_boxes(output, full_trucks, boxes_in_truck):
+    (min_box, max_box), (min_truck, max_truck) = output
+    for box in min_box[0]:
+        boxes_in_truck[max_truck[0]].append(box)
+        boxes_in_truck[min_truck[0]].remove(box)
+    for box in max_box[0]:
+        boxes_in_truck[min_truck[0]].append(box)
+        boxes_in_truck[max_truck[0]].remove(box)
+    truck_indices = [min_truck[0], max_truck[0]]
+    for truck in truck_indices:
+        full_trucks[truck] = [truck, sum(box_list[x][1] for x in boxes_in_truck[truck]), sum(box_list[x][2] for x in boxes_in_truck[truck])]
+    max_truck1 = full_trucks[max_truck[0]]
+    min_truck1 = full_trucks[min_truck[0]]
+    max_trucks, min_trucks = max(full_trucks, key=lambda el:el[1]), min(full_trucks, key=lambda el:el[1])
+    score = max_trucks[1] - min_trucks[1]
+    return score, full_trucks, boxes_in_truck
+
+destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck, combination_boxes)
+full_trucks, boxes_in_truck = iterative_relaxation(full_trucks_init, boxes_in_truck_init, combination_boxes, True)
+</code></pre>
+
+<pre><code>iteration 0 score = 11.102120422495034
+iteration 1 score = 10.803437865041246
+iteration 2 score = 10.556727174099024
+iteration 3 score = 9.872209963393175
+iteration 4 score = 9.637535031031348
+iteration 5 score = 9.619873789853841
+iteration 6 score = 9.45481362975653
+iteration 7 score = 9.312566423834994
+iteration 8 score = 9.284263098693032
+iteration 9 score = 9.264669155363663
+iteration 10 score = 9.058474149670246
+iteration 11 score = 8.874067157750517
+iteration 12 score = 8.866383785710752
+iteration 13 score = 8.86361202602319
+iteration 14 score = 8.707783024197795
+iteration 15 score = 8.683343261857146
+iteration 16 score = 8.50506069004615
+iteration 17 score = 8.484862681309721
+iteration 18 score = 8.364230834697253
+iteration 19 score = 8.06609307693526
+iteration 20 score = 7.716202207943809
+iteration 21 score = 7.699234956470036
+iteration 22 score = 7.62669351747428
+iteration 23 score = 7.520638272053304
+iteration 24 score = 7.499512852227099
+iteration 25 score = 7.443004678785769
+iteration 26 score = 7.362861882487891
+iteration 27 score = 7.030972267551078
+iteration 28 score = 6.99191791473487
+iteration 29 score = 6.982255965500713
+iteration 30 score = 6.917668823958252
+iteration 31 score = 6.898039944692357
+iteration 32 score = 6.868466646944512
+iteration 33 score = 6.857615783696872
+iteration 34 score = 6.834248504128595
+iteration 35 score = 6.818524234099357
+iteration 36 score = 6.723857821435445
+iteration 37 score = 6.689780493704291
+iteration 38 score = 6.572262458573789
+iteration 39 score = 6.556859858518237
+iteration 40 score = 6.118501063331848
+iteration 41 score = 6.052187868385943
+iteration 42 score = 6.039505607299361
+iteration 43 score = 6.0225469694420894
+iteration 44 score = 5.901090433921013
+iteration 45 score = 5.891469389498468
+iteration 46 score = 5.882881851933632
+iteration 47 score = 5.859598878376403
+iteration 48 score = 5.842011909175767
+iteration 49 score = 5.830237636031654
+iteration 50 score = 5.8119829320971235
+iteration 51 score = 5.54074158439812
+iteration 52 score = 5.524941607245694
+iteration 53 score = 5.476573399469714
+iteration 54 score = 5.325344643556605
+iteration 55 score = 5.320217840230441
+iteration 56 score = 5.312479593172895
+iteration 57 score = 5.2882196529133125
+iteration 58 score = 5.210254176992748
+iteration 59 score = 5.055273281106054
+iteration 60 score = 5.027538416760422
+iteration 61 score = 4.9144725426389755
+iteration 62 score = 4.8383751774644566
+iteration 63 score = 4.8366542920607
+iteration 64 score = 4.825645717773966
+iteration 65 score = 4.79423198937468
+iteration 66 score = 4.71545330845322
+iteration 67 score = 4.622278122871819
+iteration 68 score = 4.555986902523898
+iteration 69 score = 4.4843403595612585
+iteration 70 score = 4.478699497215359
+iteration 71 score = 4.467609285685228
+iteration 72 score = 4.4465213194788475
+iteration 73 score = 4.434103792464953
+iteration 74 score = 4.382762083769705
+iteration 75 score = 4.353509649645787
+iteration 76 score = 4.287289971659959
+iteration 77 score = 4.2579490878868
+iteration 78 score = 4.151572338953031
+iteration 79 score = 4.060183975342795
+iteration 80 score = 4.055180703368933
+iteration 81 score = 4.007449830038695
+iteration 82 score = 3.983157833389896
+iteration 83 score = 3.905587586362685
+iteration 84 score = 3.905575499535871
+iteration 85 score = 3.900817609893579
+iteration 86 score = 3.8916324482835307
+iteration 87 score = 3.866872972415649
+iteration 88 score = 3.8259354799241123
+iteration 89 score = 3.818832506027036
+iteration 90 score = 3.6977870440933884
+iteration 91 score = 3.696592340799782
+iteration 92 score = 3.6567456316087714
+iteration 93 score = 3.494732951198955
+iteration 94 score = 3.324195198415339
+iteration 95 score = 3.2254108592903776
+iteration 96 score = 3.2118585901453116
+iteration 97 score = 3.19961064138937
+iteration 98 score = 3.1912753994896548
+iteration 99 score = 3.168008175295597
+iteration 100 score = 3.1582447009603243
+iteration 101 score = 3.135294792068464
+iteration 102 score = 2.9117090853538343
+iteration 103 score = 2.7626511286477466
+iteration 104 score = 2.729221907521662
+iteration 105 score = 2.7101444956433625
+iteration 106 score = 2.6994414523442174
+iteration 107 score = 2.662202065959775
+iteration 108 score = 2.613393036506693
+iteration 109 score = 2.606533084489854
+iteration 110 score = 2.6030593054707083
+iteration 111 score = 2.593133447643595
+iteration 112 score = 2.582320157498998
+iteration 113 score = 2.549567955190412
+iteration 114 score = 2.4600257643441523
+iteration 115 score = 2.434696708385445
+iteration 116 score = 2.427773133848575
+iteration 117 score = 2.4276234548149205
+iteration 118 score = 2.4156656692293836
+iteration 119 score = 2.4032496754817885
+iteration 120 score = 2.378005624248601
+iteration 121 score = 2.3416764127683223
+iteration 122 score = 2.3328286242093554
+iteration 123 score = 2.32282362214562
+iteration 124 score = 2.3115514541454445
+iteration 125 score = 2.2357494999865253
+iteration 126 score = 2.223393960734711
+iteration 127 score = 2.1750354575834194
+iteration 128 score = 2.1723677843256155
+iteration 129 score = 2.168104064350416
+iteration 130 score = 2.1465311551687023
+iteration 131 score = 2.1010471712593812
+iteration 132 score = 2.0856336968903406
+iteration 133 score = 2.060071738285444
+iteration 134 score = 2.0172242433051792
+iteration 135 score = 2.01217525318998
+iteration 136 score = 1.9923371285250937
+iteration 137 score = 1.9518773242323846
+iteration 138 score = 1.9463625323069778
+iteration 139 score = 1.9393350952959736
+iteration 140 score = 1.9240659944570098
+iteration 141 score = 1.917308186459934
+iteration 142 score = 1.8655450087921395
+iteration 143 score = 1.8290445896757888
+iteration 144 score = 1.776740644640597
+iteration 145 score = 1.7621818363065245
+iteration 146 score = 1.7440549877413218
+iteration 147 score = 1.6907689466589204
+iteration 148 score = 1.6722658285804641
+iteration 149 score = 1.6687204403111764
+iteration 150 score = 1.6502753836718398
+iteration 151 score = 1.6441387026438292
+iteration 152 score = 1.5947748378338247
+iteration 153 score = 1.5860667749328172
+iteration 154 score = 1.5803275832784038
+iteration 155 score = 1.5729185417196732
+iteration 156 score = 1.5614423669314306
+iteration 157 score = 1.5369222749308733
+iteration 158 score = 1.5364573266298862
+iteration 159 score = 1.5301308356505956
+iteration 160 score = 1.4770798928683462
+iteration 161 score = 1.4527368283152668
+iteration 162 score = 1.4242835101448463
+iteration 163 score = 1.4060876429911104
+iteration 164 score = 1.3931942347786617
+iteration 165 score = 1.390852529915037
+iteration 166 score = 1.3870023164556642
+iteration 167 score = 1.3828903478687948
+iteration 168 score = 1.3356747178989394
+iteration 169 score = 1.3268245852093514
+iteration 170 score = 1.3067755628762256
+iteration 171 score = 1.2993991894938404
+iteration 172 score = 1.2368719994584012
+iteration 173 score = 1.2348929751304354
+iteration 174 score = 1.217487987147365
+iteration 175 score = 1.1971633673200586
+iteration 176 score = 1.1543304652157076
+iteration 177 score = 1.1215530105405946
+iteration 178 score = 1.101502766292981
+iteration 179 score = 1.0695575010200855
+iteration 180 score = 1.0414081730873477
+iteration 181 score = 1.030552626637757
+iteration 182 score = 1.0230928558013943
+iteration 183 score = 1.000781659633617
+iteration 184 score = 0.9987358748114161
+iteration 185 score = 0.9930770197356082
+iteration 186 score = 0.9781007635335186
+iteration 187 score = 0.9589245346891175
+iteration 188 score = 0.9259995599530839
+iteration 189 score = 0.9162206033168445
+iteration 190 score = 0.9021932460149173
+iteration 191 score = 0.9019212696128989
+iteration 192 score = 0.8989092265172758
+iteration 193 score = 0.8940034507024848
+iteration 194 score = 0.8798532103958792
+iteration 195 score = 0.873627292687388
+iteration 196 score = 0.8720308560821763
+iteration 197 score = 0.8618182127650584
+iteration 198 score = 0.8577362348763131
+iteration 199 score = 0.8484583394632068
+iteration 200 score = 0.841610861189622
+iteration 201 score = 0.8410914712674185
+iteration 202 score = 0.826543366756141
+iteration 203 score = 0.805479641943009
+iteration 204 score = 0.7898273839644503
+iteration 205 score = 0.7845354428815767
+iteration 206 score = 0.7731358099057388
+iteration 207 score = 0.7637648676624735
+iteration 208 score = 0.7635518339048417
+iteration 209 score = 0.7586526728937315
+iteration 210 score = 0.7544955371476476
+iteration 211 score = 0.7531953113045233
+iteration 212 score = 0.7453934930646824
+iteration 213 score = 0.7453338562808653
+iteration 214 score = 0.7403352351639114
+iteration 215 score = 0.711248488592048
+iteration 216 score = 0.7068342666764238
+iteration 217 score = 0.6823060191449599
+iteration 218 score = 0.6742738359916984
+iteration 219 score = 0.6733542468792848
+iteration 220 score = 0.6729301943054793
+iteration 221 score = 0.6721412772185431
+iteration 222 score = 0.668009688775669
+iteration 223 score = 0.6671488907440448
+iteration 224 score = 0.6515359164083634
+iteration 225 score = 0.6454158303720305
+iteration 226 score = 0.640176099793166
+iteration 227 score = 0.6320256263557553
+iteration 228 score = 0.6210326955369396
+iteration 229 score = 0.6152468309928736
+iteration 230 score = 0.6071774146135454
+iteration 231 score = 0.5690884181001366
+iteration 232 score = 0.5662902443472717
+iteration 233 score = 0.5624048384095204
+iteration 234 score = 0.540305313539136
+iteration 235 score = 0.5003467237689279
+iteration 236 score = 0.49666299700936634
+iteration 237 score = 0.48913024625483104
+iteration 238 score = 0.4742670798691506
+iteration 239 score = 0.47120174894257616
+iteration 240 score = 0.4588067177729158
+iteration 241 score = 0.4568490396637799
+iteration 242 score = 0.455497260746597
+iteration 243 score = 0.4524958371180219
+iteration 244 score = 0.4486890804700465
+iteration 245 score = 0.44398969268320343
+iteration 246 score = 0.43775992330188274
+iteration 247 score = 0.4166113548556609
+iteration 248 score = 0.3994769179267337
+iteration 249 score = 0.3872100350755545
+iteration 250 score = 0.3847278554470108
+iteration 251 score = 0.37570200918349883
+iteration 252 score = 0.37420367671791155
+iteration 253 score = 0.3707133233356217
+iteration 254 score = 0.36232934103446723
+iteration 255 score = 0.3601960891293743
+iteration 256 score = 0.3529950416002521
+iteration 257 score = 0.3485833914017462
+iteration 258 score = 0.3468345417371097
+iteration 259 score = 0.3426604966894047
+iteration 260 score = 0.3346854362441718
+iteration 261 score = 0.33292018807992463
+iteration 262 score = 0.32918527704492817
+iteration 263 score = 0.32596243774611366
+iteration 264 score = 0.3233199186652769
+iteration 265 score = 0.32310420062918865
+iteration 266 score = 0.32142821595482474
+iteration 267 score = 0.3207440591649515
+iteration 268 score = 0.3185120816688709
+iteration 269 score = 0.31010904343577295
+iteration 270 score = 0.309951014024648
+iteration 271 score = 0.30516143953934716
+iteration 272 score = 0.30424521755981004
+iteration 273 score = 0.2972132058999932
+iteration 274 score = 0.28128860697995606
+iteration 275 score = 0.27717115595669384
+iteration 276 score = 0.27141493918634296
+iteration 277 score = 0.2632119456361579
+iteration 278 score = 0.26150634430541686
+iteration 279 score = 0.24560874954767087
+iteration 280 score = 0.2455897859724132
+iteration 281 score = 0.2448200905930662
+iteration 282 score = 0.2403993822974826
+iteration 283 score = 0.23486074773194332
+iteration 284 score = 0.23448516486979543
+iteration 285 score = 0.23395090101189453
+iteration 286 score = 0.23082552814253177
+iteration 287 score = 0.22795407755165797
+iteration 288 score = 0.22484083121696585
+iteration 289 score = 0.2235487561990226
+iteration 290 score = 0.22234627293374842
+iteration 291 score = 0.21974678070603204
+iteration 292 score = 0.21256135774871154
+iteration 293 score = 0.20877587818074517
+iteration 294 score = 0.20795888136245821
+iteration 295 score = 0.20533692486316113
+iteration 296 score = 0.20340176241649033
+iteration 297 score = 0.20067803691341624
+iteration 298 score = 0.19876313873868412
+iteration 299 score = 0.1851522690535603
+iteration 300 score = 0.18494427711590333
+iteration 301 score = 0.18192101090704682
+iteration 302 score = 0.18101297465017296
+iteration 303 score = 0.17987201104904216
+iteration 304 score = 0.17885611562718395
+iteration 305 score = 0.1722482265370786
+iteration 306 score = 0.16835741288053896
+iteration 307 score = 0.16490516226696172
+iteration 308 score = 0.1629654719821474
+iteration 309 score = 0.1621164711758638
+iteration 310 score = 0.1614336422533711
+iteration 311 score = 0.161097282901153
+iteration 312 score = 0.1597052096852849
+iteration 313 score = 0.15959735046993728
+iteration 314 score = 0.1575787000495552
+iteration 315 score = 0.15628662503161195
+iteration 316 score = 0.14913955480187724
+iteration 317 score = 0.14802753527828827
+iteration 318 score = 0.14723083746235943
+iteration 319 score = 0.14688958075299752
+iteration 320 score = 0.14647550489758032
+iteration 321 score = 0.14642724428296106
+iteration 322 score = 0.14623375888356804
+iteration 323 score = 0.14394096462189054
+iteration 324 score = 0.14164915015783208
+iteration 325 score = 0.14086222462850628
+iteration 326 score = 0.13757694317575897
+iteration 327 score = 0.13688436416487093
+iteration 328 score = 0.13548133102278825
+iteration 329 score = 0.13401039270939918
+iteration 330 score = 0.12995104649166933
+iteration 331 score = 0.12720435184530743
+iteration 332 score = 0.12355546890177038
+iteration 333 score = 0.12345275781939336
+iteration 334 score = 0.1224370738284506
+iteration 335 score = 0.12200780531918554
+iteration 336 score = 0.1192518112268317
+iteration 337 score = 0.11913786569812146
+iteration 338 score = 0.11581524129519494
+iteration 339 score = 0.11517122855457274
+iteration 340 score = 0.11069457182821907
+iteration 341 score = 0.1103650280311399
+iteration 342 score = 0.1095178927263305
+iteration 343 score = 0.10828689657591895
+iteration 344 score = 0.10658317022586061
+iteration 345 score = 0.10507399429582165
+iteration 346 score = 0.1043720825435912
+iteration 347 score = 0.1025721822380774
+iteration 348 score = 0.10195762270382147
+iteration 349 score = 0.10192699711581099
+iteration 350 score = 0.10170450287677113
+iteration 351 score = 0.10144618428643071
+iteration 352 score = 0.09609822387977829
+iteration 353 score = 0.09260063867503732
+iteration 354 score = 0.09253152895905714
+iteration 355 score = 0.09227155191734937
+iteration 356 score = 0.09115360806936224
+iteration 357 score = 0.088763005338933
+iteration 358 score = 0.08873864358758965
+iteration 359 score = 0.0854735665144517
+iteration 360 score = 0.08356710939006007
+iteration 361 score = 0.0829990403691454
+iteration 362 score = 0.08233365098436707
+iteration 363 score = 0.08160842806699975
+iteration 364 score = 0.08050743249918924
+iteration 365 score = 0.07827544761568106
+iteration 366 score = 0.0757388648036681
+iteration 367 score = 0.07540057023464897
+iteration 368 score = 0.07354437474697306
+iteration 369 score = 0.07281187793279287
+iteration 370 score = 0.07153693953813445
+iteration 371 score = 0.07085621237047235
+iteration 372 score = 0.06987730509740686
+iteration 373 score = 0.06951833834847321
+iteration 374 score = 0.06670451828034629
+iteration 375 score = 0.06574020729641461
+iteration 376 score = 0.06309448132344642
+iteration 377 score = 0.06289899461614823
+iteration 378 score = 0.06188682718561722
+iteration 379 score = 0.06158934428850671
+iteration 380 score = 0.06017237598109659
+iteration 381 score = 0.05870118115410605
+iteration 382 score = 0.05699025119332646
+iteration 383 score = 0.05346288054732895
+iteration 384 score = 0.051701187206845134
+iteration 385 score = 0.05144937742079492
+iteration 386 score = 0.05050702393162965
+iteration 387 score = 0.05018877582983805
+iteration 388 score = 0.0493001068700778
+iteration 389 score = 0.04773564905127614
+iteration 390 score = 0.047133364820297174
+iteration 391 score = 0.04593648000331996
+iteration 392 score = 0.0458641380103586
+iteration 393 score = 0.04571776893993729
+iteration 394 score = 0.04567782678219601
+iteration 395 score = 0.0449293045225545
+iteration 396 score = 0.04432584389002159
+iteration 397 score = 0.042970538569534256
+iteration 398 score = 0.04295012414985422
+iteration 399 score = 0.04072853118788089
+iteration 400 score = 0.04065279215762985
+iteration 401 score = 0.04055107489494958
+iteration 402 score = 0.04038110098991865
+iteration 403 score = 0.040334881765602404
+iteration 404 score = 0.0391683381209873
+iteration 405 score = 0.038926828876924446
+iteration 406 score = 0.0385894494357899
+iteration 407 score = 0.0376007779306633
+iteration 408 score = 0.03713111112614342
+no match was found
+iterations =  409
+</code></pre>
+
+<pre><code class="language-python">destination, full_trucks, boxes_in_truck = initial_distribution(box_list)
+combination_boxes = {x:[] for x in range(100)}
+combination_boxes = generate_combinations(boxes_in_truck, combination_boxes, range(100))
+# full_trucks, boxes_in_truck = iterative_relaxation(full_trucks_init, combination_boxes_init)
+cProfile.run('iterative_relaxation(full_trucks, boxes_in_truck, combination_boxes, print_it = False)', sort='cumulative')
+</code></pre>
+
+<pre><code>no match was found
+iterations =  409
+         266905 function calls (265555 primitive calls) in 0.585 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.586    0.586 {built-in method builtins.exec}
+        1    0.000    0.000    0.586    0.586 &lt;string&gt;:1(&lt;module&gt;)
+        1    0.001    0.001    0.586    0.586 &lt;ipython-input-318-a0938c73865b&gt;:16(iterative_relaxation)
+      410    0.492    0.001    0.528    0.001 &lt;ipython-input-252-89df8e1dc7d5&gt;:1(relaxation)
+      409    0.026    0.000    0.029    0.000 &lt;ipython-input-318-a0938c73865b&gt;:1(generate_combinations)
+      819    0.014    0.000    0.027    0.000 {built-in method builtins.max}
+      409    0.003    0.000    0.026    0.000 &lt;ipython-input-318-a0938c73865b&gt;:32(swap_boxes)
+      820    0.011    0.000    0.016    0.000 {built-in method builtins.sorted}
+    41000    0.008    0.000    0.010    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:6(&lt;lambda&gt;)
+      409    0.006    0.000    0.009    0.000 {built-in method builtins.min}
+    81800    0.006    0.000    0.006    0.000 &lt;ipython-input-318-a0938c73865b&gt;:45(&lt;lambda&gt;)
+     1636    0.002    0.000    0.004    0.000 {built-in method builtins.sum}
+    42549    0.003    0.000    0.003    0.000 {method 'append' of 'list' objects}
+   1252/2    0.001    0.000    0.002    0.001 copy.py:132(deepcopy)
+    41000    0.002    0.000    0.002    0.000 {built-in method builtins.abs}
+  201/101    0.000    0.000    0.002    0.000 copy.py:210(_deepcopy_list)
+      222    0.002    0.000    0.002    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:22(&lt;listcomp&gt;)
+    11699    0.002    0.000    0.002    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:22(&lt;lambda&gt;)
+        1    0.000    0.000    0.001    0.001 copy.py:236(_deepcopy_dict)
+      188    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:9(&lt;listcomp&gt;)
+    10920    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:24(&lt;lambda&gt;)
+     9171    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:9(&lt;lambda&gt;)
+     8306    0.001    0.000    0.001    0.000 &lt;ipython-input-252-89df8e1dc7d5&gt;:11(&lt;lambda&gt;)
+     6220    0.001    0.000    0.001    0.000 &lt;ipython-input-318-a0938c73865b&gt;:42(&lt;genexpr&gt;)
+     1555    0.000    0.000    0.000    0.000 {method 'remove' of 'list' objects}
+     2504    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+      409    0.000    0.000    0.000    0.000 &lt;ipython-input-318-a0938c73865b&gt;:2(&lt;dictcomp&gt;)
+     1658    0.000    0.000    0.000    0.000 {built-in method builtins.id}
+        2    0.000    0.000    0.000    0.000 {built-in method builtins.print}
+      202    0.000    0.000    0.000    0.000 copy.py:252(_keep_alive)
+        6    0.000    0.000    0.000    0.000 iostream.py:342(write)
+        7    0.000    0.000    0.000    0.000 iostream.py:180(schedule)
+     1050    0.000    0.000    0.000    0.000 copy.py:190(_deepcopy_atomic)
+        7    0.000    0.000    0.000    0.000 {built-in method posix.urandom}
+        7    0.000    0.000    0.000    0.000 threading.py:1104(is_alive)
+        6    0.000    0.000    0.000    0.000 iostream.py:297(_schedule_flush)
+        7    0.000    0.000    0.000    0.000 threading.py:1062(_wait_for_tstate_lock)
+        6    0.000    0.000    0.000    0.000 iostream.py:284(_is_master_process)
+        7    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.lock' objects}
+        7    0.000    0.000    0.000    0.000 iostream.py:87(_event_pipe)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        7    0.000    0.000    0.000    0.000 threading.py:506(is_set)
+        6    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+        6    0.000    0.000    0.000    0.000 {built-in method posix.getpid}
+        1    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+</code></pre>
+
+<p>This looks much better, the generate_combinations function now only amounts to 5% of the total time, and the proportion of time swapping boxes decreased by half. As a result the total run time decreased by three quarters.</p>
+
+            <ul class="share-buttons">
+    <li>Share this article:</li>
+    <li>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2finasio.github.io%2fpost%2fgo-is-for-lovers%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title="Share on Facebook"></a>
+    </li>
+    <li>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Go%20is%20for%20lovers&amp;url=https%3a%2f%2finasio.github.io%2fpost%2fgo-is-for-lovers%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title="Tweet this article"></a>
+    </li>
+    <li>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2finasio.github.io%2fpost%2fgo-is-for-lovers%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title="Share on Google&#43;"></a>
+    </li>
+    <li>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2finasio.github.io%2fpost%2fgo-is-for-lovers%2f&title=Go%20is%20for%20lovers" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title="Share on Linkedin"></a>
+    </li>
+</ul>
+
+        </article>
+        
+    </main>
+    <aside class="author">
+  <img class="profile-image" src="https://inasio.github.io/img/profile-image.jpg" alt="inasio" />
+  <p class="name">by 
+  <strong>inasio</strong></p>
+  <p class="address">Earth</p>
+  <p class="link"></p>
+  <ul class="social">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a href="//github.com/inasio" class="icon-github" target="_blank" title="Github"></a></li>
+
+
+
+
+<li><a href="https://inasio.github.io/post/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+
+  </ul>
+  <br><br>
+</aside>
+
+</div>
+
+<footer class="main-footer">
+  <div class="container clearfix">
+        <a class="icon-rss" href="https://inasio.github.io/post/index.xml" title="RSS"></a>
+        <p>&copy; 2018 &middot; Powered by <a href="http://gohugo.io">Hugo</a>.</p>
+  </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>window.jQuery || document.write('<script src="https:\/\/inasio.github.io\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="https://inasio.github.io/js/plugins.js"></script>
+
+
+
+
+</body>
+</html>
+
