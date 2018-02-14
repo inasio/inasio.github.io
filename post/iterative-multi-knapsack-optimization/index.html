@@ -616,6 +616,12 @@ iterations =  409
 
 <p>This looks much better, the generate_combinations function now only amounts to 5% of the total time, and the proportion of time swapping boxes decreased by half. As a result the total run time decreased by three quarters.</p>
 
+<p>As a final point, I plotted the score at each iteration (although this is for a larger instance with over 2000 boxes):</p>
+
+<p><img src="/static/img/iterations_vs_score.png" alt="Number of iterations vs Score" /></p>
+
+<p>In the context of the <strong>P = NP</strong> discussion (or perhaps it has nothing to do with it&hellip;), we can see an exponential relationship between the score and the accuracy, roughly for each 200 iterations of the algorithm we gain one order of magnitude improvement in accuracy. This is not a polynomial relationship (if we had a loglog plot showing a straight line it would be), but we can in theory get as close as we want to the optimal solution (which we don&rsquo;t know if it exists).</p>
+
             <ul class="share-buttons">
     <li>Share this article:</li>
     <li>
