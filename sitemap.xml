@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://inasio.github.io/post/dfs-for-bomb-placement/</loc>
+    <lastmod>2018-03-08T11:18:44-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://inasio.github.io/post/hero-by-blood-is-cheating/</loc>
     <lastmod>2018-03-08T11:16:49-07:00</lastmod>
   </url>
@@ -45,10 +50,6 @@
   </url>
   
   <url>
-    <loc>https://inasio.github.io/post/dfs-for-bomb-placement/</loc>
-  </url>
-  
-  <url>
     <loc>https://inasio.github.io/tags/meta/</loc>
     <lastmod>2017-09-28T15:35:54-07:00</lastmod>
     <priority>0</priority>
@@ -62,25 +63,25 @@
   
   <url>
     <loc>https://inasio.github.io/categories/others/</loc>
-    <lastmod>2018-03-08T11:16:49-07:00</lastmod>
+    <lastmod>2018-03-08T11:18:44-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://inasio.github.io/</loc>
-    <lastmod>2018-03-08T11:16:49-07:00</lastmod>
+    <lastmod>2018-03-08T11:18:44-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://inasio.github.io/post/</loc>
-    <lastmod>2018-03-08T11:16:49-07:00</lastmod>
+    <lastmod>2018-03-08T11:18:44-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://inasio.github.io/tags/python-optimization-np/</loc>
-    <lastmod>2018-02-08T15:51:44-07:00</lastmod>
+    <lastmod>2018-03-08T11:18:44-07:00</lastmod>
     <priority>0</priority>
   </url>
   
