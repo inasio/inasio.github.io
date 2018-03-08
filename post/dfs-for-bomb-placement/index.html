@@ -1,0 +1,551 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Pantaloche</title>
+        <meta name="author">
+        <meta name="description" content="Pantaloche static site">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="Hugo 0.29" />
+        <link href="https://inasio.github.io/post/index.xml" rel="alternate" type="application/rss+xml" title="Pantaloche" />
+        <link href="https://inasio.github.io/post/index.xml" rel="feed" type="application/rss+xml" title="Pantaloche" />
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://inasio.github.io/css/styles.css">
+        <link rel="icon" href="https://inasio.github.io/favicon.ico">
+        <link rel="apple-touch-icon" href="https://inasio.github.io/apple-touch-icon.png" />
+        <link rel="stylesheet" href="https://inasio.github.io/css/highlightjs/monokai.css">
+        <script src="https://inasio.github.io/js/vendor/modernizr-2.8.0.min.js"></script>
+        
+        <style>
+        .site-header h2 .logo {
+        background: url(https://inasio.github.io/img/desk.jpg) no-repeat 0 0;
+        }
+        @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+          .site-header h2 .logo {
+            background-image: url(https://inasio.github.io/img/desk.jpg);
+        }}
+       .site-header {
+         background: #2a373d url(https://inasio.github.io/img/desk.jpg) no-repeat center center;
+         z-index: -1;
+        }
+        </style>
+    </head>
+    <body>
+        
+        <header class="site-header">
+          <div class="transparent-layer">
+              <h2>Pantaloche</h2>
+          </div>
+        </header>
+
+
+<div class="container clearfix">
+    <main role="main" class="content">
+        <article class="post">
+            <a class="btn home" href="https://inasio.github.io/" title="Back to home">&laquo; Back to home</a>
+            
+<h1><a href="https://inasio.github.io/post/dfs-for-bomb-placement/" title="Implementing a DFS backtracking algorithm for optimal bomb placement">Implementing a DFS backtracking algorithm for optimal bomb placement</a></h1>
+
+<footer class="post-info">Posted on <span class="post-meta"><time datetime="0001.01.01">0001.01.01</time>
+
+    &middot; Tagged in
+        
+        <a href="https://inasio.github.io/tags/python-optimization-np">python, optimization, np</a>
+        
+    
+
+</span>
+</footer>
+
+            <p><strong>Background</strong></p>
+
+<p>Original problem:</p>
+
+<p><a href="https://www.codingame.com/training/hard/vox-codei-episode-1">Codingame vox-codei episode 1</a></p>
+
+<p>There are a number of targets places in a rectangular grid that must be destroyed with by placing bombs near them. Bombs will destroy targets up to three spaces directly above, below, left, or right of where the bombs are placed, but obstacles could be in the way.</p>
+
+<p><strong><em>Bomb code</em></strong></p>
+
+<p>First we define a few examples that can be easily understood. We will start with a greedy algorithm (try to place the best possible bomb), and notice that the example num = 0 is designed to fail the greedy approach.</p>
+
+<pre><code class="language-python">import numpy as np
+from collections import defaultdict
+
+def maps(num):
+    '''return simple maps to test the code
+    . == emtpy space
+    4 == targets (think sharks)
+    9 == bombs
+    8 == obstacles'''
+    
+    if num == -1:
+        num_bombs = 1
+        map_list = ('...\n'
+                    '4.4\n'
+                    '...\n')
+    if num == 0:
+        num_bombs = 4
+        map_list = ('....4....\n'
+                    '.........\n'
+                    '....4....\n'
+                    '.........\n'
+                    '4.4...4.4\n'
+                    '.........\n'
+                    '....4....\n'
+                    '.........\n'
+                    '....4....\n')
+    if num == 1:
+        num_bombs = 2
+        map_list =  ('4.4....\n'
+                     '.......\n'
+                     '4.....4\n'
+                     '.......\n'
+                     '.......\n')
+    if num == 2:
+        num_bombs = 1
+        map_list = ('....\n'
+                    '4.44\n'
+                    '....\n')
+    return num_bombs, map_list,
+        
+for i in range(-1,3):
+    print(maps(i)[1])    
+</code></pre>
+
+<pre><code>...
+4.4
+...
+
+....4....
+.........
+....4....
+.........
+4.4...4.4
+.........
+....4....
+.........
+....4....
+
+4.4....
+.......
+4.....4
+.......
+.......
+
+....
+4.44
+....
+</code></pre>
+
+<pre><code class="language-python">def map_to_grid(map_str):
+    map_list = map_str.strip().split('\n')
+    width, height = len(map_list[0]), len(map_list)
+    grid = np.zeros([height, width])
+    for row in range(height):
+        map_row = map_list[row]  # one line of the firewall grid
+        for col, x in enumerate(map_row):
+            if x.isnumeric() == True:    # targets
+                grid[row, col] = int(x)
+#             if x == '8':    # blocks
+#                 grid[row, col] = 8
+    return grid
+
+def grid_to_map(grid):
+    height, width = grid.shape
+    map_str = ''
+    for x in range(height):
+        for y in range(width):
+            if grid[x, y] == 0:
+                map_str += '.'
+            else:
+                map_str += str(int(grid[x, y]))
+        map_str += '\n'
+    return map_str
+
+n = 2
+grid = map_to_grid(maps(n)[1])
+print(grid)
+map_str = grid_to_map(grid)
+print(map_str)
+assert(map_str == maps(n)[1])
+</code></pre>
+
+<pre><code>[[ 0.  0.  0.  0.]
+ [ 4.  0.  4.  4.]
+ [ 0.  0.  0.  0.]]
+....
+4.44
+....
+</code></pre>
+
+<p>We will now find the places where bombs could be planted, and sort them by how many targets get destroyed. This next function will list all of the targets that get destroyed given the position of a bomb. Remember that bombs explode in a cross-shaped pattern, destroying any target up to three units to each side</p>
+
+<pre><code class="language-python">def determine_targets_hit(bomb_location, map_str):
+    '''from bomb_location and based on targets and 
+        blocks locations determine which targets are hit
+        targets = 4 (shark)
+        blocks  = 8 (chunky)
+        bombs   = 9 (fuse)'''
+    grid = map_to_grid(map_str)
+    height, width = grid.shape
+    targets, blocks = set(), set()
+    for x in range(height):
+        for y in range(width):
+            if grid[x,y] == 4:
+                targets.add((x,y))
+            if grid[x,y] == 8:
+                blocks.add((x,y))
+    x,y = bomb_location
+    targets_hit = set()
+    for i in range(1,4):
+        if (x+i, y) in blocks:
+            break
+        if (x+i, y) in targets:
+            targets_hit.add((x+i, y))
+
+    for i in range(1,4):
+        if (x-i, y) in blocks:
+            break
+        if (x-i, y) in targets:
+            targets_hit.add((x-i, y))
+
+    for i in range(1,4):
+        if (x, y+i) in blocks:
+            break
+        if (x, y+i) in targets:
+            targets_hit.add((x, y+i))
+
+    for i in range(1,4):
+        if (x, y-i) in blocks:
+            break
+        if (x, y-i) in targets:
+            targets_hit.add((x, y-i))
+    return targets_hit
+
+n = 2
+# grid = map_to_grid(maps(n))
+map_str = maps(n)[1]
+print(determine_targets_hit((1, 1), map_str))
+assert(len(determine_targets_hit((1, 1), map_str)) == 3)
+assert(len(determine_targets_hit((2, 1), map_str)) == 0)
+assert(len(determine_targets_hit((0, 2), map_str)) == 1)
+</code></pre>
+
+<pre><code>{(1, 2), (1, 0), (1, 3)}
+</code></pre>
+
+<p>Now we&rsquo;ll write a function to determine all of the grid coordinates that destroy at least one target, and going forward we&rsquo;ll use only them</p>
+
+<pre><code class="language-python">def all_bomb_coords(map_str):
+    '''return all possible bomb coordinates that destroy any targets'''
+    grid = map_to_grid(map_str)
+    height, width = grid.shape
+    possible_bomb_coords = set()
+    for x in range(height):
+        for y in range(width):
+            if grid[x,y] == 0:
+                if len(determine_targets_hit((x, y), map_str)) &gt; 0:
+                    possible_bomb_coords.add((x,y))
+    return possible_bomb_coords
+
+n = 2
+# grid = map_to_grid(maps(n))
+map_str = maps(n)[1]
+print(all_bomb_coords(map_str))
+assert(len(all_bomb_coords(map_str)) == 7)
+</code></pre>
+
+<pre><code>{(0, 0), (2, 0), (1, 1), (2, 3), (2, 2), (0, 3), (0, 2)}
+</code></pre>
+
+<p>Now, check all (good) bomb coordinates and sort them by effectiveness (# of destroyed targets). Since potentially we could just generate the good bomb coordinate candidates all at once, we&rsquo;ll make it so that we can pass them to the function</p>
+
+<pre><code class="language-python">def bombs_sorted(map_str, possible_bomb_coords = None):
+    '''determine the number of targets in reach for every possible bomb position'''
+    damage_bombs = []
+    if possible_bomb_coords == None:
+        possible_bomb_coords = all_bomb_coords(map_str)
+    for bomb_location in possible_bomb_coords:
+        targets_hit = determine_targets_hit(bomb_location, map_str)
+        num_targets = len(targets_hit)
+        if num_targets &gt; 0:
+            damage_bombs.append((num_targets, bomb_location))
+    return sorted(damage_bombs, key=lambda el:el[0])
+
+n = 2
+map_str = maps(n)[1]
+print(bombs_sorted(map_str))
+assert(bombs_sorted(map_str)[-1][0] == 3)
+assert(bombs_sorted(map_str)[-1][1] == (1,1))
+</code></pre>
+
+<pre><code>[(1, (0, 0)), (1, (2, 0)), (1, (2, 3)), (1, (2, 2)), (1, (0, 3)), (1, (0, 2)), (3, (1, 1))]
+</code></pre>
+
+<p>Now, bombs take three turns to activate and destroy targets in their vicinity, so we&rsquo;ll do a function that at each turn choses the best bomb (greedy approach), converts targets (4) to (3), and any existing targets that are not yet 0 get decreased by one unit of time</p>
+
+<pre><code class="language-python">def update_grid(map_str, bomb_location = None):
+    '''chose the best bomb, update all destroyed targets and previously bombed targets
+    that are still on the time 3,2,1'''
+    grid = map_to_grid(map_str)
+#     print(grid)
+    height, width = grid.shape  # update step
+    for x in range(height):
+        for y in range(width):
+            if 0 &lt; grid[x, y] &lt; 4:
+                grid[x, y] -= 1
+    if bomb_location == None:
+        return grid_to_map(grid)
+    targets_hit = determine_targets_hit(bomb_location, map_str)
+    grid[bomb_location] = 9
+    for target in targets_hit:
+        grid[target] = 3
+    return grid_to_map(grid)
+
+n = 2
+# grid = map_to_grid(maps(n))
+map_str = maps(n)[1]
+possible_bomb_coords = all_bomb_coords(map_str)
+for _ in range(5):
+    print(map_str)
+    sorted_bombs = bombs_sorted(map_str, possible_bomb_coords)
+    print(sorted_bombs)
+    if sorted_bombs:
+        bomb_location = sorted_bombs[-1][1]
+        map_str = update_grid(map_str, bomb_location)
+    else:
+        map_str = update_grid(map_str)
+</code></pre>
+
+<pre><code>....
+4.44
+....
+
+[(1, (0, 0)), (1, (2, 0)), (1, (2, 3)), (1, (2, 2)), (1, (0, 3)), (1, (0, 2)), (3, (1, 1))]
+....
+3933
+....
+
+[]
+....
+2922
+....
+
+[]
+....
+1911
+....
+
+[]
+....
+.9..
+....
+
+[]
+</code></pre>
+
+<p>Now let&rsquo;s try to implement it as a depth-first search algorithm. The graph consists of the positions of all bombs until you reach a point where all targets are destroyed. It&rsquo;s DFS in the sense that each iteration goes to the bomb that destroys the most targets. In this first run we do a full traversal of the graph. Best to try first the smallest graph&hellip;</p>
+
+<pre><code class="language-python">n = -1
+num_bombs, map_str = maps(n)
+frontier, visited = [], set()
+possible_bomb_coords = all_bomb_coords(map_str)
+bombs = bombs_sorted(map_str, possible_bomb_coords)
+for bomb in bombs:
+    bomb_location = bomb[1]
+    frontier.append(update_grid(map_str, bomb_location))
+
+while frontier:
+    map_str = frontier.pop(-1)
+    visited.add(map_str)
+    bombs = bombs_sorted(map_str, possible_bomb_coords)
+    if bombs:
+        for bomb in bombs:
+            bomb_location = bomb[1]
+            temp_map = update_grid(map_str, bomb_location)
+            if temp_map not in set(frontier) | visited:
+                frontier.append(temp_map)
+    grid = map_to_grid(map_str)
+    if (len(grid[grid == 4]) == 0):
+        print(map_str)
+</code></pre>
+
+<pre><code>...
+393
+...
+
+..9
+392
+...
+
+..9
+3.2
+9..
+
+9.9
+3.2
+...
+
+...
+392
+..9
+
+...
+3.2
+9.9
+
+9..
+3.2
+..9
+
+..9
+2.3
+9..
+
+...
+2.3
+9.9
+
+...
+293
+9..
+
+9.9
+2.3
+...
+
+9..
+2.3
+..9
+
+9..
+293
+...
+</code></pre>
+
+<p>We now add the a check on the number of bombs, and only print the leaves that satisfy the conditions</p>
+
+<pre><code class="language-python">n = 1
+num_bombs, map_str = maps(n)
+frontier, visited = [], set()
+possible_bomb_coords = all_bomb_coords(map_str)
+bombs = bombs_sorted(map_str, possible_bomb_coords)
+for bomb in bombs:
+    bomb_location = bomb[1]
+    frontier.append(update_grid(map_str, bomb_location))
+
+while frontier:
+    map_str = frontier.pop(-1)
+    visited.add(map_str)
+    bombs = bombs_sorted(map_str, possible_bomb_coords)
+    if bombs:
+        for bomb in bombs:
+            bomb_location = bomb[1]
+            temp_map = update_grid(map_str, bomb_location)
+            if temp_map not in set(frontier) | visited:
+                frontier.append(temp_map)
+    grid = map_to_grid(map_str)
+    if (len(grid[grid == 4]) == 0) and (len(grid[grid == 9]) == num_bombs):    
+        print(map_str)
+</code></pre>
+
+<pre><code>2.29...
+.......
+3..9..3
+.......
+.......
+
+3.39...
+.......
+2..9..2
+.......
+.......
+
+393....
+.......
+2..9..2
+.......
+.......
+
+292....
+.......
+3..9..3
+.......
+.......
+</code></pre>
+
+<p>This works well for all the graphs except for the largest one (n = 0), so we&rsquo;ll need to tweak the algorithm somehow to reduce the number of possibilities. One possibility is to make the bombs immediately destroy the targets, and once the path is found deal with the ordering of the bombs. To be continued&hellip;</p>
+
+            <ul class="share-buttons">
+    <li>Share this article:</li>
+    <li>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2finasio.github.io%2fpost%2fdfs-for-bomb-placement%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title="Share on Facebook"></a>
+    </li>
+    <li>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Implementing%20a%20DFS%20backtracking%20algorithm%20for%20optimal%20bomb%20placement&amp;url=https%3a%2f%2finasio.github.io%2fpost%2fdfs-for-bomb-placement%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title="Tweet this article"></a>
+    </li>
+    <li>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2finasio.github.io%2fpost%2fdfs-for-bomb-placement%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title="Share on Google&#43;"></a>
+    </li>
+    <li>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2finasio.github.io%2fpost%2fdfs-for-bomb-placement%2f&title=Implementing%20a%20DFS%20backtracking%20algorithm%20for%20optimal%20bomb%20placement" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title="Share on Linkedin"></a>
+    </li>
+</ul>
+
+        </article>
+        
+    </main>
+    <aside class="author">
+  <img class="profile-image" src="https://inasio.github.io/img/profile-image2.jpg" alt="inasio" />
+  <p class="name">by 
+  <strong>inasio</strong></p>
+  <p class="address">Earth</p>
+  <p class="link"></p>
+  <ul class="social">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a href="//github.com/inasio" class="icon-github" target="_blank" title="Github"></a></li>
+
+
+
+
+<li><a href="https://inasio.github.io/post/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+
+  </ul>
+  <br><br>
+</aside>
+
+</div>
+
+<footer class="main-footer">
+  <div class="container clearfix">
+        <a class="icon-rss" href="https://inasio.github.io/post/index.xml" title="RSS"></a>
+        <p>&copy; 2018 &middot; Powered by <a href="http://gohugo.io">Hugo</a>.</p>
+  </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>window.jQuery || document.write('<script src="https:\/\/inasio.github.io\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="https://inasio.github.io/js/plugins.js"></script>
+
+
+
+
+</body>
+</html>
+

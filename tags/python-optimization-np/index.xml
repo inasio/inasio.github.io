@@ -24,5 +24,19 @@ Background
 You are a great tycoon who needs to move materials, equipment and gold from Chicago to New York to build your next sky scraper. You have a convoy of 100 trucks and a variable amount of boxes to move. Unfortunately there are unscrupulous villains who would like to steal the gold from one of your shipments.</description>
     </item>
     
+    <item>
+      <title>Implementing a DFS backtracking algorithm for optimal bomb placement</title>
+      <link>https://inasio.github.io/post/dfs-for-bomb-placement/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://inasio.github.io/post/dfs-for-bomb-placement/</guid>
+      <description>Background
+Original problem:
+Codingame vox-codei episode 1
+There are a number of targets places in a rectangular grid that must be destroyed with by placing bombs near them. Bombs will destroy targets up to three spaces directly above, below, left, or right of where the bombs are placed, but obstacles could be in the way.
+Bomb code
+First we define a few examples that can be easily understood. We will start with a greedy algorithm (try to place the best possible bomb), and notice that the example num = 0 is designed to fail the greedy approach.</description>
+    </item>
+    
   </channel>
 </rss>
