@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Books Movies on Pantaloche</title>
+    <link>https://inasio.github.io/tags/books-movies/</link>
+    <description>Recent content in Books Movies on Pantaloche</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Powered by [Hugo](http://gohugo.io).</copyright>
+    <lastBuildDate>Thu, 08 Mar 2018 11:16:49 -0700</lastBuildDate>
+    
+	<atom:link href="https://inasio.github.io/tags/books-movies/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>History will not be kind</title>
+      <link>https://inasio.github.io/post/hero-by-blood-is-cheating/</link>
+      <pubDate>Thu, 08 Mar 2018 11:16:49 -0700</pubDate>
+      
+      <guid>https://inasio.github.io/post/hero-by-blood-is-cheating/</guid>
+      <description>One of the classic tropes in books and movies (I guess I should say stories) is the one, the hero that shows up to save the day, starts up weak and ignorant, and grows to be wise and strong. Quite a few of these heros were, unknown to them at first, descendants of similarly heroic people. It is then most natural that they grow to be leaders and saviors, perhaps their special heritage/blood comes with cool powers that eventually manifest themselves.</description>
+    </item>
+    
+  </channel>
+</rss>
