@@ -1,0 +1,360 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Pantaloche</title>
+        <meta name="author">
+        <meta name="description" content="Pantaloche static site">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="Hugo 0.29" />
+        <link href="https://inasio.github.io/post/index.xml" rel="alternate" type="application/rss+xml" title="Pantaloche" />
+        <link href="https://inasio.github.io/post/index.xml" rel="feed" type="application/rss+xml" title="Pantaloche" />
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://inasio.github.io/css/styles.css">
+        <link rel="icon" href="https://inasio.github.io/favicon.ico">
+        <link rel="apple-touch-icon" href="https://inasio.github.io/apple-touch-icon.png" />
+        <link rel="stylesheet" href="https://inasio.github.io/css/highlightjs/monokai.css">
+        <script src="https://inasio.github.io/js/vendor/modernizr-2.8.0.min.js"></script>
+        
+        <style>
+        .site-header h2 .logo {
+        background: url(https://inasio.github.io/img/desk.jpg) no-repeat 0 0;
+        }
+        @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+          .site-header h2 .logo {
+            background-image: url(https://inasio.github.io/img/desk.jpg);
+        }}
+       .site-header {
+         background: #2a373d url(https://inasio.github.io/img/desk.jpg) no-repeat center center;
+         z-index: -1;
+        }
+        </style>
+    </head>
+    <body>
+        
+        <header class="site-header">
+          <div class="transparent-layer">
+              <h2>Pantaloche</h2>
+          </div>
+        </header>
+
+
+<div class="container clearfix">
+    <main role="main" class="content">
+        <article class="post">
+            <a class="btn home" href="https://inasio.github.io/" title="Back to home">&laquo; Back to home</a>
+            
+<h1><a href="https://inasio.github.io/post/serif-g-rules/" title="Attempting to improve on serif fonts">Attempting to improve on serif fonts</a></h1>
+
+<footer class="post-info">Posted on <span class="post-meta"><time datetime="2018.03.16">2018.03.16</time>
+
+    &middot; Tagged in
+        
+        <a href="https://inasio.github.io/tags/python-fonts-fractals">python, fonts, fractals</a>
+        
+    
+
+</span>
+</footer>
+
+            <p>My favourite typeset letter is serif lowercase <strong>g</strong>. If you compare all typeset letters with how you would write them by hand, the weird standout by far is the <strong>g</strong>. Maybe the a is also a bit weird, but I know a few people that write the <strong>a</strong> in the same way as in serif text. The <strong>t, l, i</strong> have slight flourishes, but nothing compared to the <strong>g</strong>. Let&rsquo;s take a look</p>
+
+<pre><code class="language-python">from PIL import Image, ImageChops
+g_classic = Image.open('gg1.png')
+g_classic
+</code></pre>
+
+<p><img src="output_1_0.png" alt="png" /></p>
+
+<p>I especially love the lower part of the letter, how it starts in the left of the main body, opposite to how everybody would write, but somehow still remains well balanced with the letter, with that wiggle in the top helping quite a bit. I think that the top wiggle reminds me of Tintin, in any case, this letter has way more attitude and cool than the rest of the serif letters put together. It&rsquo;s kind of the punk letter.</p>
+
+<p>It&rsquo;s wrong chronologically, but I like to imagine that the greek alphabet people saw the <strong>g</strong> and were jealous, and then went ahead and did the <strong>$\xi$</strong>, but just totally over did it.</p>
+
+<p>Anyway, I once did a batik t-shirt that had a super cool <strong>g</strong> in wax, when it&rsquo;s small like in paper it&rsquo;s hard to add anything to it that would be noticeable, but at a large scale (font 1000?) I think there&rsquo;s some room for improvement. Since I already called it the punk letter, let&rsquo;s go one step further and punkify it even more. With fractals of course.</p>
+
+<p>The idea is to draw the outline of the letter (inside and outside ideally) and then add a snowflake fractal pattern all along the edges. First step to the outline will be to trace it with a continuation algorithm.</p>
+
+<pre><code class="language-python">width, height = g_classic.size
+im_data = g_classic.getdata()
+colors = set()
+for pixel in im_data:
+    colors.add(pixel)
+print(colors)
+</code></pre>
+
+<pre><code>{(171, 171, 171, 255), (201, 201, 201, 255), (119, 119, 119, 255), (149, 149, 149, 255), (51, 51, 51, 255), (66, 66, 66, 255), (29, 29, 29, 255), (172, 172, 172, 255), (202, 202, 202, 255), (232, 232, 232, 255), (22, 22, 22, 255), (165, 165, 165, 255), (52, 52, 52, 255), (195, 195, 195, 255), (97, 97, 97, 255), (112, 112, 112, 255), (143, 143, 143, 255), (158, 158, 158, 255), (75, 75, 75, 255), (233, 233, 233, 255), (23, 23, 23, 255), (181, 181, 181, 255), (98, 98, 98, 255), (113, 113, 113, 255), (128, 128, 128, 255), (159, 159, 159, 255), (61, 61, 61, 255), (204, 204, 204, 255), (91, 91, 91, 255), (234, 234, 234, 255), (8, 8, 8, 255), (54, 54, 54, 255), (84, 84, 84, 255), (227, 227, 227, 255), (190, 190, 190, 255), (205, 205, 205, 255), (107, 107, 107, 255), (137, 137, 137, 255), (55, 55, 55, 255), (85, 85, 85, 255), (130, 130, 130, 255), (17, 17, 17, 255), (160, 160, 160, 255), (236, 236, 236, 255), (153, 153, 153, 255), (40, 40, 40, 255), (199, 199, 199, 255), (86, 86, 86, 255), (101, 101, 101, 255), (116, 116, 116, 255), (131, 131, 131, 255), (79, 79, 79, 255), (222, 222, 222, 255), (237, 237, 237, 255), (11, 11, 11, 255), (26, 26, 26, 255), (169, 169, 169, 255), (117, 117, 117, 255), (132, 132, 132, 255), (162, 162, 162, 255), (49, 49, 49, 255), (192, 192, 192, 255), (95, 95, 95, 255), (12, 12, 12, 255), (72, 72, 72, 255), (231, 231, 231, 255), (118, 118, 118, 255), (193, 193, 193, 255), (254, 254, 254, 255), (141, 141, 141, 255), (43, 43, 43, 255), (58, 58, 58, 255), (73, 73, 73, 255), (21, 21, 21, 255), (164, 164, 164, 255), (194, 194, 194, 255), (224, 224, 224, 255), (14, 14, 14, 255), (157, 157, 157, 255), (44, 44, 44, 255), (89, 89, 89, 255), (104, 104, 104, 255), (135, 135, 135, 255), (150, 150, 150, 255), (67, 67, 67, 255), (225, 225, 225, 255), (15, 15, 15, 255), (173, 173, 173, 255), (90, 90, 90, 255), (105, 105, 105, 255), (53, 53, 53, 255), (196, 196, 196, 255), (226, 226, 226, 255), (0, 0, 0, 255), (46, 46, 46, 255), (76, 76, 76, 255), (219, 219, 219, 255), (182, 182, 182, 255), (197, 197, 197, 255), (255, 255, 255, 24), (129, 129, 129, 255), (47, 47, 47, 255), (77, 77, 77, 255), (122, 122, 122, 255), (9, 9, 9, 255), (152, 152, 152, 255), (228, 228, 228, 255), (145, 145, 145, 255), (32, 32, 32, 255), (78, 78, 78, 255), (93, 93, 93, 255), (108, 108, 108, 255), (251, 251, 251, 255), (71, 71, 71, 255), (214, 214, 214, 255), (229, 229, 229, 255), (3, 3, 3, 255), (18, 18, 18, 255), (109, 109, 109, 255), (154, 154, 154, 255), (41, 41, 41, 255), (184, 184, 184, 255), (4, 4, 4, 255), (64, 64, 64, 255), (223, 223, 223, 255), (110, 110, 110, 255), (246, 246, 246, 255), (133, 133, 133, 255), (35, 35, 35, 255), (50, 50, 50, 255), (65, 65, 65, 255), (13, 13, 13, 255), (156, 156, 156, 255), (255, 255, 255, 93), (186, 186, 186, 255), (216, 216, 216, 255), (6, 6, 6, 255), (36, 36, 36, 255), (81, 81, 81, 255), (96, 96, 96, 255), (255, 255, 255, 255), (142, 142, 142, 255), (187, 187, 187, 255), (217, 217, 217, 255), (7, 7, 7, 255), (82, 82, 82, 255), (45, 45, 45, 255), (188, 188, 188, 255), (218, 218, 218, 255), (248, 248, 248, 255), (38, 38, 38, 255), (68, 68, 68, 255), (211, 211, 211, 255), (174, 174, 174, 255), (249, 249, 249, 255), (39, 39, 39, 255), (69, 69, 69, 255), (114, 114, 114, 255), (1, 1, 1, 255), (144, 144, 144, 255), (175, 175, 175, 255), (220, 220, 220, 255), (250, 250, 250, 255), (24, 24, 24, 255), (70, 70, 70, 255), (100, 100, 100, 255), (243, 243, 243, 255), (255, 255, 255, 8), (191, 191, 191, 255), (206, 206, 206, 255), (221, 221, 221, 255), (123, 123, 123, 255), (10, 10, 10, 255), (146, 146, 146, 255), (33, 33, 33, 255), (176, 176, 176, 255), (252, 252, 252, 255), (56, 56, 56, 255), (215, 215, 215, 255), (102, 102, 102, 255), (147, 147, 147, 255), (238, 238, 238, 255), (253, 253, 253, 255), (27, 27, 27, 255), (42, 42, 42, 255), (185, 185, 185, 255), (5, 5, 5, 255), (148, 148, 148, 255), (163, 163, 163, 255), (178, 178, 178, 255), (208, 208, 208, 255), (111, 111, 111, 255), (28, 28, 28, 255), (88, 88, 88, 255), (247, 247, 247, 255), (134, 134, 134, 255), (179, 179, 179, 255), (209, 209, 209, 255), (127, 127, 127, 255), (59, 59, 59, 255), (74, 74, 74, 255), (37, 37, 37, 255), (180, 180, 180, 255), (210, 210, 210, 255), (240, 240, 240, 255), (30, 30, 30, 255), (60, 60, 60, 255), (203, 203, 203, 255), (120, 120, 120, 255), (151, 151, 151, 255), (166, 166, 166, 255), (83, 83, 83, 255), (241, 241, 241, 255), (31, 31, 31, 255), (189, 189, 189, 255), (106, 106, 106, 255), (121, 121, 121, 255), (136, 136, 136, 255), (167, 167, 167, 255), (212, 212, 212, 255), (99, 99, 99, 255), (242, 242, 242, 255), (16, 16, 16, 255), (62, 62, 62, 255), (92, 92, 92, 255), (235, 235, 235, 255), (183, 183, 183, 255), (198, 198, 198, 255), (213, 213, 213, 255), (115, 115, 115, 255), (2, 2, 2, 255), (63, 63, 63, 255), (138, 138, 138, 255), (25, 25, 25, 255), (168, 168, 168, 255), (244, 244, 244, 255), (161, 161, 161, 255), (48, 48, 48, 255), (207, 207, 207, 255), (94, 94, 94, 255), (124, 124, 124, 255), (139, 139, 139, 255), (87, 87, 87, 255), (230, 230, 230, 255), (245, 245, 245, 255), (19, 19, 19, 255), (34, 34, 34, 255), (177, 177, 177, 255), (125, 125, 125, 255), (140, 140, 140, 255), (155, 155, 155, 255), (170, 170, 170, 255), (57, 57, 57, 255), (200, 200, 200, 255), (103, 103, 103, 255), (20, 20, 20, 255), (80, 80, 80, 255), (239, 239, 239, 255), (126, 126, 126, 255)}
+</code></pre>
+
+<p>This shows that the (r,g,b,a) pixels in the <strong>g</strong> have several shades of gray (when r=g=b&lt;255), the white section is all represented by (255,255,255,255). To obtain the (x,y) coordinates of the outline I will use a continuation algorithm that follows the border and looks ahead to pick the next best coordinate, updating the direction.</p>
+
+<p>Since the (x,y) coordinates underlie a rectangular grid, possible directions will be N, NE, NW, etc. To start, we will assume that there are no sharp curves, so if the direction is N, we will look at the coordinates in E, NE, N, NW, and W as possible next steps. Assuming we are on a white pixel and want to find the next white pixel along the border (white on the left), at each step we will evaluate the coordinates in the upper quadrant (relative to the direction) from left to right, the first white one will be the next step to follow</p>
+
+<pre><code class="language-python">directions = ['E', 'NE', 'N', 'NW', 'W', 'SW', 'S', 'SE']
+
+def direction_quadrant(direction):
+    '''return the five possible directions explore based on the current direction'''
+    init = directions.index(direction) - 3
+    end = directions.index(direction) + 4
+    if init &lt; 0:
+        return directions[init%8:] + directions[:end]
+    elif end &gt; 7:
+        return directions[init:] + directions[:end%8]
+    else:
+        return directions[init:end]
+    
+direction_quadrant('N')
+assert(direction_quadrant('N') == ['SE', 'E', 'NE', 'N', 'NW', 'W', 'SW'])
+direction_quadrant('SE')
+</code></pre>
+
+<pre><code>['W', 'SW', 'S', 'SE', 'E', 'NE', 'N']
+</code></pre>
+
+<p>Assuming that (0,0) is the upper right corner, we&rsquo;ll define a dictionary to convert directions to the effect on the (x,y) coordinates, with north == up, east == right</p>
+
+<pre><code class="language-python">direction_to_xy = {'E':(1,0), 'NE':(1,-1), 'N':(0,-1), 'NW':(-1,-1), 'W':(-1,0), 'SW':(-1,1), 'S':(0,1), 'SE':(1,1)}
+</code></pre>
+
+<p>We&rsquo;re can now pick a starting condition (0, 200 in this case), and walk right until we hit the border, guesstimating the initial direction as <strong>N</strong> we can take a few steps and see if our algorithm correctly traces the outline.</p>
+
+<pre><code class="language-python">def next_step(position, direction):
+    x0, y0 = position
+    possible_dirs = direction_quadrant(direction)
+    for poss_dir in possible_dirs:
+        x1,y1 = direction_to_xy[poss_dir]
+        if im_data[(y0+y1) * width + (x0+x1)][0] == 255:
+            return((x0+x1, y0+y1), poss_dir)
+    return 'Not found'
+
+x0, y0 = 0, 200
+r_color = 255
+while r_color == 255:
+    x0 += 1
+    r_color = im_data[y0 * width + x0][0]
+direction = 'N'
+position = (x0, y0)
+coords = [position]
+for _ in range(2500):
+    position, direction = next_step(position, direction)
+    coords.append(position)
+
+import matplotlib.pyplot as plt
+plt.plot([x[0] for x in coords], [-x[1] for x in coords])
+plt.axis('equal')
+plt.axis('off')
+plt.show()
+</code></pre>
+
+<p><img src="output_9_0.png" alt="png" /></p>
+
+<p>Looking good so far. Will just add a couple of more loops to get the inner details in the upper and lower part of the body.</p>
+
+<pre><code class="language-python">'''outer loop'''
+x0, y0 = 0, 200
+while im_data[y0 * width + x0][0] == 255:
+    x0 += 1
+direction = 'N'
+position = (x0, y0)
+position_start, _ = next_step(position, direction)
+position, direction = next_step(position, direction)
+print(position)
+coords_outer = [position]
+while True:
+    position, direction = next_step(position, direction)
+    coords_outer.append(position)
+    if position == position_start:
+        break
+        
+'''top inner loop'''
+x0, y0 = 300, 200
+while im_data[y0 * width + x0][0] == 255:
+    x0 += 1
+direction = 'N'
+position = (x0, y0)
+position_start, _ = next_step(position, direction)
+position, direction = next_step(position, direction)
+print(position)
+coords_top_inner = [position]
+while True:
+    position, direction = next_step(position, direction)
+    coords_top_inner.append(position)
+    if position == position_start:
+        break
+        
+'''bottom inner loop'''
+x0, y0 = 300, 700
+while im_data[y0 * width + x0][0] == 255:
+    x0 += 1
+direction = 'N'
+position = (x0, y0)
+position_start, _ = next_step(position, direction)
+position, direction = next_step(position, direction)
+print(position)
+coords_bottom_inner = [position]
+while True:
+    position, direction = next_step(position, direction)
+    coords_bottom_inner.append(position)
+    if position == position_start:
+        break
+
+plt.plot([x[0] for x in coords_outer], [-x[1] for x in coords_outer])
+plt.plot([x[0] for x in coords_top_inner], [-x[1] for x in coords_top_inner])
+plt.plot([x[0] for x in coords_bottom_inner], [-x[1] for x in coords_bottom_inner])
+plt.axis('equal')
+plt.axis('off')
+plt.show()
+</code></pre>
+
+<pre><code>(127, 199)
+(400, 199)
+(471, 699)
+</code></pre>
+
+<p><img src="output_11_1.png" alt="png" /></p>
+
+<p>With the outlines fully traces, we now need to add the snowflake fractal pattern</p>
+
+<pre><code class="language-python">import numpy as np
+
+def tri_vertex(x0, x1):
+    centre = (x0+x1)/2.
+    l1 = centre - x0
+    h = np.sqrt(3)*np.linalg.norm(l1)
+    l2 = np.array([-l1[1], l1[0]])
+    l2 = h*l2/np.linalg.norm(l2)
+    return centre - l2
+
+def new_generation(coords):
+    new_coords = []
+    for i, (x,y) in enumerate(coords[:-1]):
+        new_coords.append((x,y))
+        new_coords.append((x + (coords[i+1][0] - x)/3., y + (coords[i+1][1] - y)/3.))
+        temp = (x + 2*(coords[i+1][0] - x)/3., y + 2*(coords[i+1][1] - y)/3.)
+        tri = tri_vertex(np.array(new_coords[-1]), np.array(temp))
+        new_coords.append(tuple(tri))
+        new_coords.append(temp)
+    return new_coords
+
+step = 60
+for coords in [coords_outer, coords_top_inner, coords_bottom_inner]:
+    coords_test = coords[::step]
+    coords_gen1 = new_generation(coords_test)
+    plt.plot([x[0] for x in coords_gen1] + [coords_gen1[0][0]], [-x[1] for x in coords_gen1] + [-coords_gen1[0][1]])
+plt.axis('equal')
+plt.axis('off')
+plt.show()
+
+</code></pre>
+
+<p><img src="output_13_0.png" alt="png" /></p>
+
+<p>Pretty Metal! The only thing is maybe we would want the inner segments to have the pointy bits to the outside, this can easily be done just reversing the order in the arrays</p>
+
+<pre><code class="language-python">step = 60
+for coords in [coords_outer, coords_top_inner[::-1], coords_bottom_inner[::-1]]:
+    coords_test = coords[::step]
+    coords_gen1 = new_generation(coords_test)
+    plt.plot([x[0] for x in coords_gen1] + [coords_gen1[0][0]], [-x[1] for x in coords_gen1] + [-coords_gen1[0][1]])
+plt.axis('equal')
+plt.axis('off')
+plt.show()
+</code></pre>
+
+<p><img src="output_15_0.png" alt="png" /></p>
+
+<p>Now we just need to iterate the procedure a few (an infinte?) number of times&hellip;</p>
+
+<pre><code class="language-python">step = 60
+coords_sections = [coords_outer[::step], coords_top_inner[::-1][::step], coords_bottom_inner[::-1][::step]]
+for _ in range(3):
+    coords_new = []
+    for i, coords in enumerate(coords_sections):
+        coords_test = coords
+        coords_gen = new_generation(coords)
+        coords_new.append(coords_gen)
+        plt.plot([x[0] for x in coords_gen] + [coords_gen[0][0]], [-x[1] for x in coords_gen] + [-coords_gen[0][1]], color='black', linewidth = 0.3)
+    coords_sections = coords_new
+plt.axis('equal')
+plt.axis('off')
+plt.show()
+
+</code></pre>
+
+<p><img src="output_17_0.png" alt="png" /></p>
+
+<p>Like I said, serif <strong>g</strong> really is the nicest letter of all</p>
+
+<p>To be continued: - write a full font based on this&hellip;</p>
+
+            <ul class="share-buttons">
+    <li>Share this article:</li>
+    <li>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2finasio.github.io%2fpost%2fserif-g-rules%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title="Share on Facebook"></a>
+    </li>
+    <li>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Attempting%20to%20improve%20on%20serif%20fonts&amp;url=https%3a%2f%2finasio.github.io%2fpost%2fserif-g-rules%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title="Tweet this article"></a>
+    </li>
+    <li>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2finasio.github.io%2fpost%2fserif-g-rules%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title="Share on Google&#43;"></a>
+    </li>
+    <li>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2finasio.github.io%2fpost%2fserif-g-rules%2f&title=Attempting%20to%20improve%20on%20serif%20fonts" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title="Share on Linkedin"></a>
+    </li>
+</ul>
+
+        </article>
+        
+    </main>
+    <aside class="author">
+  <img class="profile-image" src="https://inasio.github.io/img/profile-image2.jpg" alt="inasio" />
+  <p class="name">by 
+  <strong>inasio</strong></p>
+  <p class="address">Earth</p>
+  <p class="link"></p>
+  <ul class="social">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a href="//github.com/inasio" class="icon-github" target="_blank" title="Github"></a></li>
+
+
+
+
+<li><a href="https://inasio.github.io/post/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+
+  </ul>
+  <br><br>
+</aside>
+
+</div>
+
+<footer class="main-footer">
+  <div class="container clearfix">
+        <a class="icon-rss" href="https://inasio.github.io/post/index.xml" title="RSS"></a>
+        <p>&copy; 2018 &middot; Powered by <a href="http://gohugo.io">Hugo</a>.</p>
+  </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>window.jQuery || document.write('<script src="https:\/\/inasio.github.io\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="https://inasio.github.io/js/plugins.js"></script>
+
+
+
+
+</body>
+</html>
+

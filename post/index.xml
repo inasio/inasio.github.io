@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Powered by [Hugo](http://gohugo.io).</copyright>
-    <lastBuildDate>Thu, 08 Mar 2018 11:18:44 -0700</lastBuildDate>
+    <lastBuildDate>Fri, 16 Mar 2018 15:51:44 -0700</lastBuildDate>
     
 	<atom:link href="https://inasio.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Attempting to improve on serif fonts</title>
+      <link>https://inasio.github.io/post/serif-g-rules/</link>
+      <pubDate>Fri, 16 Mar 2018 15:51:44 -0700</pubDate>
+      
+      <guid>https://inasio.github.io/post/serif-g-rules/</guid>
+      <description>My favourite typeset letter is serif lowercase g. If you compare all typeset letters with how you would write them by hand, the weird standout by far is the g. Maybe the a is also a bit weird, but I know a few people that write the a in the same way as in serif text. The t, l, i have slight flourishes, but nothing compared to the g. Let&amp;rsquo;s take a look</description>
+    </item>
     
     <item>
       <title>Implementing a DFS backtracking algorithm for optimal bomb placement</title>
