@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Powered by [Hugo](http://gohugo.io).</copyright>
-    <lastBuildDate>Fri, 16 Mar 2018 15:51:44 -0700</lastBuildDate>
+    <lastBuildDate>Sat, 21 Apr 2018 21:25:44 -0700</lastBuildDate>
     
 	<atom:link href="https://inasio.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Solving the traveling salesman problem with dice</title>
+      <link>https://inasio.github.io/post/heuristics-ftw/</link>
+      <pubDate>Sat, 21 Apr 2018 21:25:44 -0700</pubDate>
+      
+      <guid>https://inasio.github.io/post/heuristics-ftw/</guid>
+      <description>In this notebook we will attempt to solve a traveling salesman problem (TSP), that is, find the shortest circuit that visits a list of cities (x,y coordinates). This is a classic computationally hard problem, as the number of operations required to exactly solve the problems scales with the factorial of the number of cities. This means that if finding the exact solution for 10 cities takes 1 second, 15 cities will take 4 days, and 50 will take on the order of $10^{50}$ seconds.</description>
+    </item>
     
     <item>
       <title>Attempting to improve on serif fonts</title>

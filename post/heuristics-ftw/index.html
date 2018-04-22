@@ -1,0 +1,479 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Pantaloche</title>
+        <meta name="author">
+        <meta name="description" content="Pantaloche static site">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="Hugo 0.29" />
+        <link href="https://inasio.github.io/post/index.xml" rel="alternate" type="application/rss+xml" title="Pantaloche" />
+        <link href="https://inasio.github.io/post/index.xml" rel="feed" type="application/rss+xml" title="Pantaloche" />
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://inasio.github.io/css/styles.css">
+        <link rel="icon" href="https://inasio.github.io/favicon.ico">
+        <link rel="apple-touch-icon" href="https://inasio.github.io/apple-touch-icon.png" />
+        <link rel="stylesheet" href="https://inasio.github.io/css/highlightjs/monokai.css">
+        <script src="https://inasio.github.io/js/vendor/modernizr-2.8.0.min.js"></script>
+        
+        <style>
+        .site-header h2 .logo {
+        background: url(https://inasio.github.io/img/desk.jpg) no-repeat 0 0;
+        }
+        @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+          .site-header h2 .logo {
+            background-image: url(https://inasio.github.io/img/desk.jpg);
+        }}
+       .site-header {
+         background: #2a373d url(https://inasio.github.io/img/desk.jpg) no-repeat center center;
+         z-index: -1;
+        }
+        </style>
+    </head>
+    <body>
+        
+        <header class="site-header">
+          <div class="transparent-layer">
+              <h2>Pantaloche</h2>
+          </div>
+        </header>
+
+
+<div class="container clearfix">
+    <main role="main" class="content">
+        <article class="post">
+            <a class="btn home" href="https://inasio.github.io/" title="Back to home">&laquo; Back to home</a>
+            
+<h1><a href="https://inasio.github.io/post/heuristics-ftw/" title="Solving the traveling salesman problem with dice">Solving the traveling salesman problem with dice</a></h1>
+
+<footer class="post-info">Posted on <span class="post-meta"><time datetime="2018.04.21">2018.04.21</time>
+
+    &middot; Tagged in
+        
+        <a href="https://inasio.github.io/tags/python-np-heuristics">python, np, heuristics</a>
+        
+    
+
+</span>
+</footer>
+
+            <p>In this notebook we will attempt to solve a traveling salesman problem (TSP), that is, find the shortest circuit that visits a list of cities (x,y coordinates). This is a classic computationally hard problem, as the number of operations required to exactly solve the problems scales with the factorial of the number of cities. This means that if finding the exact solution for 10 cities takes 1 second, 15 cities will take 4 days, and 50 will take on the order of $10^{50}$ seconds. There are many heuristics to get good approximations in reasonable time, in this problem we will look at a list of 72 cities (kindly provided by Helmut K.). By some miracle we also happen to know that the optimal shortest tour is around 1340 units long, so we can see how well the algorithms do.</p>
+
+<p>We&rsquo;ll start by loading the cities, further down I&rsquo;ll explain a bit more why it&rsquo;s a good idea to load them as complex variables. For a good overview of several TSP algorithms in very readable python code, take a look at Peter Norvig&rsquo;s blog: <a href="https://github.com/norvig/pytudes/blob/master/ipynb/TSP.ipynb">https://github.com/norvig/pytudes/blob/master/ipynb/TSP.ipynb</a></p>
+
+<p>The specifics of the first SA algorithm (temperature and number of iterations) were also sugested by Helmut K., I used some ideas from Norvig&rsquo;s blog for the improvement heuristic.</p>
+
+<pre><code class="language-python">a = open(&quot;tour.txt&quot;)
+b = a.readlines()
+c = [(complex(*(map(int, x.split())))) for x in b]
+</code></pre>
+
+<p>Let&rsquo;s now plot the 72 cities, maybe we can find an obvious pattern&hellip;</p>
+
+<pre><code class="language-python">import matplotlib.pyplot as plt
+plt.figure('cities')
+plt.plot([x.real for x in c], [x.imag for x in c],'o')
+plt.show()
+</code></pre>
+
+<p><img src="/img/TSP3/output_3_0.png" alt="png" /></p>
+
+<p>As a starting point let&rsquo;s define the initial tour to follow the order in the cities (and close it by adding the first coordinates at the end)</p>
+
+<pre><code class="language-python">def plot_tour(tour_coords):
+    tour = [x.real for x in tour_coords], [x.imag for x in tour_coords]
+    plt.figure('init tour')
+    plt.plot(*tour,'-', color='black', linewidth=0.5, alpha=0.5)
+    plt.plot(*tour,'o', color='red', alpha=0.5)
+    plt.axis('Off')
+    plt.show()
+init_tour = c + [c[0]]
+plot_tour(init_tour)
+
+</code></pre>
+
+<p><img src="/img/TSP3/output_5_0.png" alt="png" /></p>
+
+<p>So probably not optimal&hellip; Let&rsquo;s now define a function to measure the length of the tour. There are multiple ways to compute the euclidean distance (np.linalg.norm, np.sqrt(np.dot&hellip;), and it&rsquo;s worth taking some time to find the fastest one because the majority of the time will be spent here. It turns out that defining the coordinates as complex numbers and using abs(x-y) for the distance between x and y is one order of magnitude faster. Using numpy (complex) arrays wasn&rsquo;t faster than the two other approaches, although if the number of cities was larger it could be worth it. Things could still be faster using cython, and something else to explore could be numba just-in-time compilers (@jit)&hellip;</p>
+
+<pre><code class="language-python">from functools import reduce
+import numpy as np
+def determine_tour_length(tour):
+    '''the tour will be defined by an ordered list of (x,y) coordinates, 
+    defining a closed tour (N+1 cities)'''
+    d0,d1 = tour[:-1], tour[1:]
+    return sum(map(lambda x,y: abs(x-y), d0, d1))
+test_tour = [complex(0,0), complex(1,0), complex(1,1), complex(0,1)]
+closed_tour = test_tour + [test_tour[0]]
+assert(determine_tour_length(closed_tour) == 4)
+trivial_tour = np.array(c + [c[0]])
+print('tour distance =', determine_tour_length(trivial_tour))
+</code></pre>
+
+<pre><code>tour distance = 7823.79351309
+</code></pre>
+
+<p>The initial tour is almost 8000 units long. Let&rsquo;s run a few random tours to see if this is an outlier</p>
+
+<pre><code class="language-python">for i in range(10):
+    tour_order = np.random.permutation(range(72))
+    random_tour = [c[x] for x in tour_order]
+    closed_random_tour = random_tour + [random_tour[0]]
+    print('tour distance =', determine_tour_length(closed_random_tour))
+</code></pre>
+
+<pre><code>tour distance = 7256.074064853622
+tour distance = 8004.551247073913
+tour distance = 7772.781257598235
+tour distance = 7862.2002522221555
+tour distance = 7463.232471008553
+tour distance = 8392.116967918952
+tour distance = 7958.033039831291
+tour distance = 7747.246535760044
+tour distance = 8133.8099203295715
+tour distance = 7267.668172691573
+</code></pre>
+
+<p>Now we&rsquo;ll do a few Montecarlo updates where we switch two cities in the tour, if it results in a shorter tour we keep it, otherwise reject</p>
+
+<pre><code class="language-python">from time import time
+
+def determine_tour_length(tour):
+    '''the tour will be defined by an ordered list of (x,y) coordinates, 
+    defining a closed tour (N+1 cities)'''
+    return sum(map(lambda x,y: abs(x-y), tour[:-1], tour[1:]))
+
+t0 = time()
+tour_order = list(range(72))
+open_tour = [c[x] for x in tour_order]
+closed_tour = open_tour + [open_tour[0]]
+tour_length = determine_tour_length(closed_tour)
+print(tour_length)
+for i in range(10000):
+    swaps_0, swaps_1 = np.random.randint(0,72,2)
+    closed_tour[swaps_0], closed_tour[swaps_1] = closed_tour[swaps_1], closed_tour[swaps_0]
+    closed_tour[-1] = closed_tour[0]
+    tour_length_temp = determine_tour_length(closed_tour)
+    if tour_length_temp &lt; tour_length:
+        tour_length = tour_length_temp
+        continue
+    else:
+        closed_tour[swaps_0], closed_tour[swaps_1] = closed_tour[swaps_1], closed_tour[swaps_0]
+        closed_tour[-1] = closed_tour[0]
+print(tour_length)
+print('run time =',time() - t0)        
+</code></pre>
+
+<pre><code>7823.793513086029
+2326.9363620231775
+run time = 0.23029565811157227
+</code></pre>
+
+<p>For each Montecarlo update we swap two elements in the tour, and always check that the last city is the same as the first one (in order to have a closed tour).</p>
+
+<p>Each 10,000 updates take around 0.2 seconds; as mentioned earlier I thought numpy arrays things could be faster but that doesn&rsquo;t seem to be the case. Another possibility would be to generate a lookup table with all the distances between pairs of cities, might be worth it if things start to take too long.</p>
+
+<p>As it stands, for the next simulated annealing part, we will do 200 runs, with a linearly increasing number of iterations in each (10K x j, with j in range(1,201)&hellip; By the young Gauss theorem, that should take around 0.2 sec * 201 * 100 ~= 1 hour, which doesn&rsquo;t sound too bad (a bit more than Trefethen&rsquo;s 5 second limit unfortunately).</p>
+
+<p>Plotting the updated tour we get the following:</p>
+
+<pre><code class="language-python">plot_tour(closed_tour)
+</code></pre>
+
+<p><img src="/img/TSP3/output_13_0.png" alt="png" /></p>
+
+<p>This looks much better than the original tour, but still definitely not optimal. We&rsquo;ll use a simulated annealing algorithm to see if we can improve the tour. We randomly pick to cities and check if swapping their order in the tour decreases the distance. If the difference (new_tour - old<em>tour) is possitive and small, we check a random variable that depends on the &ldquo;temperature&rdquo; of the system, if it&rsquo;s smaller we still do the swap. The temperature is high at first, allowing us to more broadly sample the parameter space and potentially avoid falling in local minima, and we slowly decrease the temperature, making positive energy jumps harder and harder (see the annealing process for softening metals: <a href="https://en.wikipedia.org/wiki/Annealing">https://en.wikipedia.org/wiki/Annealing</a></em>(metallurgy)</p>
+
+<pre><code class="language-python">T = 20.01
+t0 = time()
+tour_order = np.random.permutation(range(72))
+open_tour = [c[x] for x in tour_order]
+closed_tour = open_tour + [open_tour[0]]
+tour_length = determine_tour_length(closed_tour)
+optimal_tour = closed_tour[:]
+temperatures, tours = [T], [tour_length]
+print('initial tour length', tour_length)
+for j in range(200):
+# for j in range(50):
+    T -= 0.1
+    temperatures += [T]
+    iterations = 10000*j
+    for i in range(iterations):
+        swaps_0, swaps_1 = np.random.randint(0,72,2)
+        closed_tour[swaps_0], closed_tour[swaps_1] = closed_tour[swaps_1], closed_tour[swaps_0]
+        closed_tour[-1] = closed_tour[0]
+        tour_length_temp = determine_tour_length(closed_tour)
+        energy = tour_length_temp - tour_length
+        if energy &lt; 0:
+            tour_length = tour_length_temp
+            optimal_tour = closed_tour[:]
+            continue
+        elif energy &gt;= 0:
+            if np.random.random() &lt; np.exp(-energy/T):
+                continue
+            else:
+                closed_tour[swaps_0], closed_tour[swaps_1] = closed_tour[swaps_1], closed_tour[swaps_0]
+                closed_tour[-1] = closed_tour[0]
+    if tour_length &lt; tours[-1]:
+        print('iteration ',j, 'tour length =',tour_length)
+    tours += [tour_length]
+    closed_tour = optimal_tour[:]
+
+print(tour_length)
+print('run time =',(time() - t0)/60, 'minutes')
+</code></pre>
+
+<pre><code>initial tour length 8162.028418295205
+iteration  1 tour length = 2502.116467471896
+iteration  2 tour length = 2306.3059365738827
+iteration  3 tour length = 2285.3764580385728
+iteration  4 tour length = 2252.299746242839
+iteration  6 tour length = 2212.98135227988
+iteration  7 tour length = 2208.6009902918295
+iteration  8 tour length = 2199.676680233124
+iteration  9 tour length = 2186.0498183127947
+iteration  10 tour length = 2181.075312490121
+...
+...
+...
+iteration  137 tour length = 1595.9432649125627
+iteration  138 tour length = 1595.7817878050384
+iteration  141 tour length = 1595.1970815845043
+iteration  146 tour length = 1594.7542470855726
+iteration  155 tour length = 1594.6341495894628
+1594.6341495894628
+run time = 65.46197291612626 minutes
+</code></pre>
+
+<pre><code class="language-python">plot_tour(closed_tour)
+plt.figure('tour length vs temperature')
+plt.plot(temperatures[2:], tours[2:])
+plt.xlabel('SA temperature')
+plt.ylabel('Tour length')
+plt.show()
+</code></pre>
+
+<p><img src="/img/TSP3/output_16_0.png" alt="png" /></p>
+
+<p><img src="/img/TSP3/output_16_1.png" alt="png" /></p>
+
+<p>The tour is clearly not optimal, an optimal tour will have no crossings. In order to try to fix the crossings we will reverse parts of the tour and see if this results in a shorter tour. Most of the crossings seem to be from long sections, so we&rsquo;ll do the checks from longer to shorter segments</p>
+
+<pre><code class="language-python">t0 = time()
+for length in reversed(range(2, 72)):
+    for start in range(0, 72 - length + 1):
+        closed_tour = closed_tour[:start] + closed_tour[start:start+length][::-1] + closed_tour[start+length:]
+        closed_tour[-1] = closed_tour[0]
+        tour_length_temp = determine_tour_length(closed_tour)
+        if tour_length_temp &lt; tour_length:
+            tour_length = tour_length_temp
+        else:
+            closed_tour = closed_tour[:start] + closed_tour[start:start+length][::-1] + closed_tour[start+length:]
+            closed_tour[-1] = closed_tour[0]
+print('improve tour time =', time() - t0)
+</code></pre>
+
+<pre><code>improve tour time = 0.04641103744506836
+</code></pre>
+
+<pre><code class="language-python">print(tour_length)
+plot_tour(closed_tour)
+</code></pre>
+
+<pre><code>1512.0176829816357
+</code></pre>
+
+<p><img src="/img/TSP3/output_19_1.png" alt="png" /></p>
+
+<p>This seems to work pretty well, and it takes less than a tenth of a second, so perhaps we could add this at the end of each temperature update in the SA algorithm. This tour is still clearly not optimal.</p>
+
+<p>For the next step, we&rsquo;ll run again the SA algorithm, but now we&rsquo;ll add one step of the remove crossings algorithm at each temperature change, also starting from the initial unoptimized state.</p>
+
+<p>It turns out that convergence is much faster than the pure SA algorithm, most of the runs arrived at the final state in 5 iterations or less, often to a tour that was more optimal than the one we did above with pure SA. To take advantage of this, we&rsquo;ll do multiple parallel runs of 10 SA steps with the remove_crossings heuristic (adjusting the temperature decrease to the larger step size).</p>
+
+<pre><code class="language-python">def remove_crossings(closed_tour):
+    tour_length = determine_tour_length(closed_tour)
+    for length in reversed(range(2, 72)):
+        for start in range(0, 72 - length + 1):
+            closed_tour = closed_tour[:start] + closed_tour[start:start+length][::-1] + closed_tour[start+length:]
+            closed_tour[-1] = closed_tour[0]
+            tour_length_temp = determine_tour_length(closed_tour)
+            if tour_length_temp &lt; tour_length:
+                tour_length = tour_length_temp
+            else:
+                closed_tour = closed_tour[:start] + closed_tour[start:start+length][::-1] + closed_tour[start+length:]
+                closed_tour[-1] = closed_tour[0]
+    return closed_tour
+
+def simulated_annealing_step(optimal_tour, T, iterations):
+    closed_tour = optimal_tour[:]
+    tour_length = determine_tour_length(closed_tour)
+    for i in range(iterations):
+        swaps_0, swaps_1 = np.random.randint(0,72,2)
+        closed_tour[swaps_0], closed_tour[swaps_1] = closed_tour[swaps_1], closed_tour[swaps_0]
+        closed_tour[-1] = closed_tour[0]
+        tour_length_temp = determine_tour_length(closed_tour)
+        energy = tour_length_temp - tour_length
+        if energy &lt; 0:
+            tour_length = tour_length_temp
+            optimal_tour = closed_tour[:]
+            continue
+        elif energy &gt;= 0:
+            if np.random.random() &lt; np.exp(-energy/T):
+                continue
+            else:
+                closed_tour[swaps_0], closed_tour[swaps_1] = closed_tour[swaps_1], closed_tour[swaps_0]
+                closed_tour[-1] = closed_tour[0]
+    return optimal_tour
+    
+tour_order = np.random.permutation(range(72))
+open_tour = [c[x] for x in tour_order]
+closed_tour = open_tour + [open_tour[0]]
+tour_length = determine_tour_length(closed_tour)
+optimal_tour = closed_tour[:]
+super_optimal_tour = optimal_tour[:]
+super_tour_length = tour_length
+for k in range(500):
+    t0 = time()
+    T = 20.01
+    tour_order = np.random.permutation(range(72))
+    open_tour = [c[x] for x in tour_order]
+    closed_tour = open_tour + [open_tour[0]]
+    tour_length = determine_tour_length(closed_tour)
+    optimal_tour = closed_tour[:]
+    temperatures, tours = [T], [tour_length]
+    print('initial tour length', tour_length)
+    for j in range(10):
+        T -= 2
+        iterations = 10000*j
+        optimal_tour = simulated_annealing_step(optimal_tour, T, iterations)
+        tour_length = determine_tour_length(optimal_tour)
+        tours += [tour_length]
+        temperatures += [T]
+        optimal_tour = remove_crossings(optimal_tour)
+        tour_length = determine_tour_length(optimal_tour)
+        if tour_length &lt; super_tour_length:
+            super_optimal_tour = optimal_tour[:]
+            super_tour_length = tour_length
+
+    print(k, tour_length, 'run time =',(time() - t0), 'seconds')
+    
+</code></pre>
+
+<pre><code>initial tour length 8551.692347136464
+0 1435.7447812267228 run time = 9.045387983322144 seconds
+initial tour length 7704.713421412914
+1 1432.858860749385 run time = 9.200761795043945 seconds
+initial tour length 7907.334039081648
+2 1398.1063446226055 run time = 9.118589878082275 seconds
+initial tour length 7029.313246558949
+3 1443.0906302888995 run time = 9.217384099960327 seconds
+initial tour length 7511.179633288302
+4 1383.3072084844384 run time = 9.176986932754517 seconds
+initial tour length 8203.18026431208
+5 1510.6573874251653 run time = 9.241087913513184 seconds
+initial tour length 7553.449316131998
+6 1464.631252551504 run time = 9.19437289237976 seconds
+initial tour length 7969.338561716284
+7 1406.977598468712 run time = 9.249701023101807 seconds
+initial tour length 8419.129326536518
+8 1384.0255223890845 run time = 9.029903888702393 seconds
+initial tour length 7704.925458242363
+9 1425.2779611905332 run time = 9.074558973312378 seconds
+initial tour length 8017.01470761087
+10 1434.4083904421616 run time = 9.079636096954346 seconds
+...
+...
+...
+409 1331.439177819865 run time = 9.027949810028076 seconds
+...
+...
+...
+initial tour length 7335.561112700709
+499 1357.3562142901217 run time = 9.21147608757019 seconds
+</code></pre>
+
+<pre><code class="language-python">plot_tour(super_optimal_tour)
+tour_length = determine_tour_length(super_optimal_tour)
+print(tour_length)
+</code></pre>
+
+<p><img src="/img/TSP3/output_22_0.png" alt="png" /></p>
+
+<pre><code>1331.439177819865
+</code></pre>
+
+<p>This tour is below the optimal bound suggested by HK, and has a bit of a fish-centaur look to it, so it&rsquo;s probably very very close to optimal. Each of the combined runs takes about 9 seconds, so the 500 runs took about the same time as a single SA run with the full 200 temperature steps.</p>
+
+            <ul class="share-buttons">
+    <li>Share this article:</li>
+    <li>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2finasio.github.io%2fpost%2fheuristics-ftw%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title="Share on Facebook"></a>
+    </li>
+    <li>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Solving%20the%20traveling%20salesman%20problem%20with%20dice&amp;url=https%3a%2f%2finasio.github.io%2fpost%2fheuristics-ftw%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title="Tweet this article"></a>
+    </li>
+    <li>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2finasio.github.io%2fpost%2fheuristics-ftw%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title="Share on Google&#43;"></a>
+    </li>
+    <li>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2finasio.github.io%2fpost%2fheuristics-ftw%2f&title=Solving%20the%20traveling%20salesman%20problem%20with%20dice" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title="Share on Linkedin"></a>
+    </li>
+</ul>
+
+        </article>
+        
+    </main>
+    <aside class="author">
+  <img class="profile-image" src="https://inasio.github.io/img/profile-image2.jpg" alt="inasio" />
+  <p class="name">by 
+  <strong>inasio</strong></p>
+  <p class="address">Earth</p>
+  <p class="link"></p>
+  <ul class="social">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<li><a href="//github.com/inasio" class="icon-github" target="_blank" title="Github"></a></li>
+
+
+
+
+<li><a href="https://inasio.github.io/post/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+
+  </ul>
+  <br><br>
+</aside>
+
+</div>
+
+<footer class="main-footer">
+  <div class="container clearfix">
+        <a class="icon-rss" href="https://inasio.github.io/post/index.xml" title="RSS"></a>
+        <p>&copy; 2018 &middot; Powered by <a href="http://gohugo.io">Hugo</a>.</p>
+  </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>window.jQuery || document.write('<script src="https:\/\/inasio.github.io\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="https://inasio.github.io/js/plugins.js"></script>
+
+
+
+
+</body>
+</html>
+
